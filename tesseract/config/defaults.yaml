@@ -1,0 +1,18 @@
+general:
+  project_name: "Tesseract"
+  task: "text-to-3d"
+  model: "shap-e"
+  seed: 42
+
+device:
+  use_cuda: true
+  fallback_to_cpu: true
+
+paths:
+  output_dir: "outputs"
+  render_dir: "outputs/previews"
+  model_cache_dir: ".cache/models"
+
+generation:
+  save_render: true
+  render_resolution: [512, 512]
