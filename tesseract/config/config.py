@@ -26,3 +26,10 @@ MODEL_CACHE_DIR = cfg["paths"]["model_cache_dir"]
 
 SAVE_RENDER = cfg["generation"]["save_render"]
 RENDER_RESOLUTION = tuple(cfg["generation"]["render_resolution"])
+
+
+###
+MODEL_CACHE_DIR = "./models"  # or wherever your shap-e models are cached
+USE_FP16 = True
+GUIDANCE_SCALE = 15.0
+BATCH_SIZE = 1

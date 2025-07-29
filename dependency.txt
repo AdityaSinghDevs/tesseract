@@ -1,0 +1,42 @@
+layer 1
+----------
+<diffusion/gaussian_diffusion.py>
+->all standard and third party imports
+
+<diffusion/sample.py>
+-> gaussian_diffusion
+-> k_diffusion *
+
+<models/download.py>
+-> configs.py *
+
+layer 2
+-----------
+<diffusion/k_diffusion.py>
+->gaussian_diffusion
+
+<models/configs.py> 
+->generation/latent_diffusion *
+->generation/perceiver *
+->generation/pooled_mlp *
+->generation/transformer *
+->models/nerf/model *
+->models/nerf/renderer *
+->models/nerstf/mlp *
+->models/nerstf/renderer *
+->models/nn/meta *
+->models/stf/mlp *
+->models/stf/renderer *
+->models/transmitter/base *
+->models/transmitter/channels_encoder *
+->models/transmitter/multiview_encoder *
+->models/transmitter/pc_encoder *
+->models/volume *
+
+#TODO : Well, might not need all of these, so we'll se later again
+
+layer 3
+---------------------
+
+
+

@@ -1,6 +1,16 @@
-torch>=1.12.1
+torch
 ninja
+filelock
+Pillow
+torch
+fire
+humanize
+requests
 tqdm
-pillow
+matplotlib
+scikit-image
 scipy
 numpy
+blobfile
+pyaml
+clip @ git+https://github.com/openai/CLIP.git
