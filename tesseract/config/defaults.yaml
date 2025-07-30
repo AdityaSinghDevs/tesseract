@@ -1,18 +1,25 @@
 general:
   project_name: "Tesseract"
-  task: "text-to-3d"
   model: "shap-e"
+  base_model : "text300M"
+  transmitter : "transmitter"
   seed: 42
 
 device:
   use_cuda: true
   fallback_to_cpu: true
 
-paths:
-  output_dir: "outputs"
-  render_dir: "outputs/previews"
-  model_cache_dir: ".cache/models"
+diffusion:
+  config_type: "diffusion"
 
-generation:
-  save_render: true
-  render_resolution: [512, 512]
+latents:
+   batch_size: 4
+  guidance_scale: 15.0
+  use_fp16: true
+  use_karras: true
+  karras_steps: 64
+  clip_denoised: true
+  progress: true
+  sigma_min: 1e-3
+  sigma_max: 160
+  s_churn: 0.0

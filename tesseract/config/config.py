@@ -8,28 +8,30 @@ def load_config(path=CONFIG_PATH):
         return yaml.safe_load(f)
 cfg = load_config()
 
-
+#General
 PROJECT_NAME = cfg["general"]["project_name"]
-TASK = cfg["general"]["task"]
 MODEL_NAME = cfg["general"]["model"]
+BASE_MODEL = cfg["general"]["base_model"]
+TRANSMITTER = cfg["general"]["transmitter"]
 SEED = cfg["general"]["seed"]
+USE_FP16 = cfg["general"]["use_fp16"]
+BATCH_SIZE = cfg["general"]["batch_size"]
 
-
+#Device
 USE_CUDA = cfg["device"]["use_cuda"]
 FALLBACK_TO_CPU = cfg["device"]["fallback_to_cpu"]
 
+#diffusion
+DIFFUSION_CONFIG = cfg["diffusion"]["config_type"]
 
-OUTPUT_DIR = cfg["paths"]["output_dir"]
-RENDER_DIR = cfg["paths"]["render_dir"]
-MODEL_CACHE_DIR = cfg["paths"]["model_cache_dir"]
-
-
-SAVE_RENDER = cfg["generation"]["save_render"]
-RENDER_RESOLUTION = tuple(cfg["generation"]["render_resolution"])
-
-
-###
-MODEL_CACHE_DIR = "./models"  # or wherever your shap-e models are cached
-USE_FP16 = True
-GUIDANCE_SCALE = 15.0
-BATCH_SIZE = 1
+#latents 
+LATENT_BATCH_SIZE = cfg["latents"]["batch_size"]
+GUIDANCE_SCALE = cfg["latents"]["guidance_scale"]
+USE_FP16 = cfg["latents"]["use_fp16"]
+USE_KARRAS = cfg["latents"]["use_karras"]
+KARRAS_STEPS = cfg["latents"]["karras_steps"]
+CLIP_DENOISED = cfg["latents"]["clip_denoised"]
+PROGRESS = cfg["latents"]["progress"]
+SIGMA_MIN = cfg["latents"]["sigma_min"]
+SIGMA_MAX = cfg["latents"]["sigma_max"]
+S_CHURN = cfg["latents"]["s_churn"]
