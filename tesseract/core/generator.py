@@ -1,0 +1,46 @@
+from typing import Any
+from config.config import (
+    LATENT_BATCH_SIZE,
+    GUIDANCE_SCALE,
+    USE_FP16,
+    USE_KARRAS,
+    KARRAS_STEPS,
+    CLIP_DENOISED,
+    PROGRESS,
+    SIGMA_MIN,
+    SIGMA_MAX,
+    S_CHURN,
+)
+from shap_e.diffusion.sample import sample_latents
+
+def generate_latents( prompt : str, model : Any, 
+diffusion : Any,
+batch_size : int = LATENT_BATCH_SIZE,
+guidance_scale : int = GUIDANCE_SCALE,
+progress : bool = PROGRESS,
+clip_denoised : bool = CLIP_DENOISED,
+use_fp16 : bool = USE_FP16,
+use_karras : bool = USE_KARRAS,
+karras_steps : int = KARRAS_STEPS,
+sigma_max : float = SIGMA_MAX,
+sigma_min : float = SIGMA_MIN,
+s_churn : int = S_CHURN)-> Any:
+    
+    latents_outputs = sample_latents(
+    batch_size=batch_size,
+    model=model,
+    diffusion=diffusion,
+    guidance_scale=guidance_scale,
+    model_kwargs=dict(texts=[prompt] * batch_size),
+    progress=progress,
+    clip_denoised=clip_denoised,
+    use_fp16=use_fp16,
+    use_karras=use_karras,
+    karras_steps=karras_steps,
+    sigma_min=sigma_min,
+    sigma_max=sigma_max,
+    s_churn=s_churn,
+    )
+
+    return latents_outputs
+
