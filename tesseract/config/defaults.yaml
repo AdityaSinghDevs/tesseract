@@ -23,3 +23,16 @@ latents:
   sigma_min: 1e-3
   sigma_max: 160
   s_churn: 0.0
+
+  #todo
+  Constant	Purpose
+LATENT_BATCH_SIZE	Number of 3D shapes to generate at once from the same prompt.
+GUIDANCE_SCALE	Controls how closely the output should follow the prompt. Higher = more faithful.
+USE_FP16	Uses 16-bit floating point instead of 32-bit to save GPU memory and improve speed.
+USE_KARRAS	Enables Karras sampling, a more stable and smooth denoising process.
+KARRAS_STEPS	Number of denoising steps in Karras sampling (more = better quality, slower).
+CLIP_DENOISED	Clamps the denoised output to valid range, prevents artifacts in output.
+PROGRESS	Whether to show a progress bar during latent sampling. Useful in notebooks or CLI.
+SIGMA_MIN	The minimum noise level during diffusion (how much randomness remains at the end).
+SIGMA_MAX	The maximum noise level during diffusion (how blurry the start is).
+S_CHURN	Controls how much noise is added during sampling. 0 = no extra noise (default/stable).
