@@ -1,11 +1,10 @@
 from typing import Any, List, Dict
 import os
-
 import numpy as np
 import trimesh
 
-from config.config import OUTPUT_DIR, DEFAULT_FORMATS
-from loggers.logger import get_logger
+from ..config.config import OUTPUT_DIR, DEFAULT_FORMATS
+from ..loggers.logger import get_logger
 from shap_e.util.notebooks import decode_latent_mesh
 
 logger = get_logger(__name__ , log_file="app.log")
@@ -18,7 +17,7 @@ def validate_latents_inputs(model : Any , latents : Any)->None:
    for i, latent in enumerate(latents):
       if not latent :
          logger.error(f"Latent {i} is empty, Nothing to decode")
-         raise ValueError
+         raise ValueError(f"Latent {i} is None, nothing to decode")
       
 
 def validate_decoded_mesh(mesh : List[Any] , output_dir : str,

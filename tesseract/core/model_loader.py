@@ -1,9 +1,8 @@
 from typing import List, Any 
-
 import torch
 
-from config.config import USE_CUDA, FALLBACK_TO_CPU, BASE_MODEL, TRANSMITTER, DIFFUSION_CONFIG
-from loggers.logger import get_logger
+from ..config.config import USE_CUDA, FALLBACK_TO_CPU, BASE_MODEL, TRANSMITTER, DIFFUSION_CONFIG
+from ..loggers.logger import get_logger
 from shap_e.models.download import load_model, load_config
 from shap_e.diffusion.gaussian_diffusion import diffusion_from_config
 
@@ -24,8 +23,12 @@ fallback_to_cpu : bool=  FALLBACK_TO_CPU)->torch.device :
           raise RuntimeError("CUDA is not available and CPU is disabled in configs")
      
 
-def load_all_models(device = str, base_model :str = BASE_MODEL, transmitter: str = TRANSMITTER,
+def load_all_models(device : torch.device, base_model :str = BASE_MODEL, transmitter: str = TRANSMITTER,
 diffusion_config : str = DIFFUSION_CONFIG)-> List[Any]:
+     
+     if not isinstance(device, torch.device):
+          logger.error(f"Invalid device type : {type(device)}")
+          raise TypeError("Device must be a torch.device object")
      
      transmitter_model = load_model(model_name = transmitter, device=device)
      logger.info(f"Transmitter model loaded : {transmitter_model}")

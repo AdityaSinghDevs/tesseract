@@ -1,7 +1,7 @@
 from typing import Any
 
-from loggers.logger import get_logger
-from config.config import (
+from ..loggers.logger import get_logger
+from ..config.config import (
     LATENT_BATCH_SIZE,
     GUIDANCE_SCALE,
     USE_FP16,
@@ -33,7 +33,7 @@ def validate_inputs(prompt : str, model : Any ,
 def generate_latents( prompt : str, model : Any, 
 diffusion : Any,
 batch_size : int = LATENT_BATCH_SIZE,
-guidance_scale : int = GUIDANCE_SCALE,
+guidance_scale : float = GUIDANCE_SCALE,
 progress : bool = PROGRESS,
 clip_denoised : bool = CLIP_DENOISED,
 use_fp16 : bool = USE_FP16,
@@ -41,7 +41,7 @@ use_karras : bool = USE_KARRAS,
 karras_steps : int = KARRAS_STEPS,
 sigma_max : float = SIGMA_MAX,
 sigma_min : float = SIGMA_MIN,
-s_churn : int = S_CHURN)-> Any:
+s_churn : float = S_CHURN)-> Any:
     
     validate_inputs(prompt, model, diffusion)
     logger.info(f"Inputs Verified, Starting latent generation from prompt : '{prompt}'")
@@ -67,7 +67,7 @@ s_churn : int = S_CHURN)-> Any:
         return latents_outputs
 
     except Exception as e:
-        logger.error(f"ERROR IN GENERATING LATENTS : {e}")
+        logger.exception(f"ERROR IN GENERATING LATENTS : {e}")
         raise 
 
     

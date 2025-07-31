@@ -1,3 +1,5 @@
+import sys
+import os
 import argparse
 from typing import Dict, Any, List
 
@@ -12,7 +14,7 @@ logger = get_logger(__name__, log_file='app.log')
 def initialize_pipeline(
         use_cuda : bool=USE_CUDA,
         fallback_to_cpu : bool=  FALLBACK_TO_CPU,
-        device = str, base_model :str = BASE_MODEL, transmitter: str = TRANSMITTER,
+         base_model :str = BASE_MODEL, transmitter: str = TRANSMITTER,
 diffusion_config : str = DIFFUSION_CONFIG
 ) -> Dict[str, Any]:
 
@@ -39,7 +41,7 @@ diffusion_config : str = DIFFUSION_CONFIG
     
 
 def generate_from_prompt(prompt:str, base_file :str,
-                         output_dir : str = OUTPUT_DIR, format = DEFAULT_FORMATS,
+                         output_dir : str = OUTPUT_DIR, formats = DEFAULT_FORMATS,
                          preloaded_pipeline: Dict[str, Any] = None,) ->Dict[str, Any]:
 
     logger.info(f"Starting generation..")
@@ -61,7 +63,7 @@ def generate_from_prompt(prompt:str, base_file :str,
         meshes = decode_latents(model=transmitter_model, latents= latents)
 
         results = save_mesh(meshes=meshes, base_file=base_file,
-                              output_dir=output_dir, formats=format)
+                              output_dir=output_dir, formats=formats)
         
         logger.info(f"Generation complete for prompt : {prompt}, saved {results['count']} files.")
 
@@ -76,10 +78,15 @@ def generate_from_prompt(prompt:str, base_file :str,
         logger.error(f"Generation failed : {e}")
         raise RuntimeError(f"Generation failed due to error : {e}")
 
-def batch_generate(prompts: List[str], output_dir:str, base_file : str):
+def batch_generate(prompts: List[str], output_dir:str, base_file : str, formats = DEFAULT_FORMATS):
 
         logger.info(f"Batch generation started for : {len(prompts)}")
         all_results = []
+
+        try:
+            pipeline = initialize_pipeline()
+        except Exception as e:
+            logger.error(f"Failed to intialize pipeline for batch : {e}")
         
         for idx, prompt in enumerate(prompts):
             if not prompt.strip():
@@ -89,7 +96,11 @@ def batch_generate(prompts: List[str], output_dir:str, base_file : str):
             file_prefix = f"{base_file}_{idx}"
 
             try:
-                result = generate_from_prompt(prompt=prompt, output_dir=output_dir, base_file=base_file)
+                result = generate_from_prompt(
+                    prompt=prompt,
+                    output_dir=output_dir,
+                    base_file=file_prefix,
+                    formats=formats)
                 all_results.append(result)
                 logger.info(f"[{idx+1}/{len(prompts)}] Generated for {prompt} saved successfully ")
             except Exception as e:
@@ -110,7 +121,7 @@ def parse_args():
     )
 
     group = parser.add_mutually_exclusive_group(required=True)
-    parser.add_argument(
+    group.add_argument(
         "-p","--prompt",
         type=str,
         help="Single prompt to generate a 3D mesh"
@@ -123,7 +134,7 @@ def parse_args():
         )
     
     parser.add_argument(
-        "-o","output_dir",
+        "-o","--output_dir",
         type=str,
         default=OUTPUT_DIR,
         help=f"Directory to save generated files (default : {OUTPUT_DIR})"
@@ -139,11 +150,44 @@ def parse_args():
     )
 
     parser.add_argument(
-        "-n","--base-file",
+        "-n","--base_file",
         type=str,
-        default={BASE_FILE},
+        default=BASE_FILE,
         help = f"Base name for output files (default : {BASE_FILE})"
     )
     return parser.parse_args()
 
 
+def main():
+    args = parse_args()
+    logger.info("CLI execution started")
+
+    try:
+        if args.prompt:
+            result = generate_from_prompt(prompt=args.prompt,
+                                        base_file=args.base_file,
+                                        output_dir=args.output_dir,
+                                            formats=args.formats )
+            print(f"\n Generated mesh for prompt : '{args.prompt}'")
+            print(f"\n Saved files : {result['saved_files']}\n")
+
+        elif args.batch_file:
+            if not os.path.exists(args.batch_file):
+                logger.error("Batch file does not exist")
+                sys.exit(1)
+
+            with open(args.batch_file, "r") as f:
+                prompts = [line.strip() for line in f if line.strip()]
+
+            results = batch_generate(prompts=prompts, output_dir=args.output_dir, formats=args.formats)
+            print(f"\n Batch generation complete : {len(results)} prompts processed")
+
+            for res in results:
+                print(f"-Prompt: {res['prompt']}-> {len(res['saved_files'])} files saved")
+
+    except Exception as e:
+        logger.error(f"CLI execution failed: {e}", exc_info=True)
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
