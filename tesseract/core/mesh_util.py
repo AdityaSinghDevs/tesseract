@@ -105,6 +105,10 @@ def save_mesh(meshes : List[Any] , base_file : str,
    logger.info(f"Created/Found output directory at : {output_dir}")
 
    for mesh_id, single_mesh in enumerate(meshes):
+      
+      if not getattr(single_mesh, 'verts', None) or not getattr(single_mesh, 'faces', None):
+            logger.warning(f"Mesh {mesh_id} is empty; skipping save.")
+            continue
       for format in formats:
         output_path = os.path.join(output_dir, f"{base_file}_{mesh_id}.{format}")
         logger.info(f"Saving {base_file} to {output_path}")
@@ -113,17 +117,20 @@ def save_mesh(meshes : List[Any] , base_file : str,
             if format == "ply":
                 with open(output_path, 'wb') as f:
                  single_mesh.write_ply(f)
+                 files.append(output_path)
             elif format == "obj":
                 with open(output_path, 'w') as f:
                  single_mesh.write_obj(f)
+                 files.append(output_path)
             elif format == "glb":
-                convert_to_glb(single_mesh, output_path)
+                glb_path = convert_to_glb(single_mesh, output_path)
+                files.append(glb_path)
             else:
                 logger.error(f"Unsupported format : {format}")
                 failed_formats.append(format)
                 continue
             logger.info(f"Exported {mesh_id} successfully to {output_path}")
-            files.append(output_path)
+            
             
         except Exception as e:   
             logger.error(f"Failed to save mesh in {format} : {e}")
