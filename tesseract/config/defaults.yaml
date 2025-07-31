@@ -13,26 +13,25 @@ diffusion:
   config_type: "diffusion"
 
 latents:
-   batch_size: 4
-  guidance_scale: 15.0
-  use_fp16: true
-  use_karras: true
-  karras_steps: 64
-  clip_denoised: true
-  progress: true
-  sigma_min: 1e-3
-  sigma_max: 160
-  s_churn: 0.0
+  batch_size: 4  # Number of 3D shapes to generate per prompt (higher = more outputs, more VRAM used)
+  guidance_scale: 15.0  # Controls prompt adherence (higher = more faithful to prompt, lower = more creative)
+  use_fp16: true  # Enables half-precision for reduced memory usage (recommended for most GPUs)
+  use_karras: true  # Uses Karras noise schedule for more stable, high-quality generation
+  karras_steps: 64  # Number of denoising steps when using Karras (more steps = smoother results, longer generation time)
+  clip_denoised: true  # Prevents over-saturation/artifacts by clamping values to valid range
+  progress: true  # Displays a live progress bar during generation (useful in CLI or notebooks)
+  sigma_min: 1e-3  # Minimum noise level during diffusion (too low can cause oversharpening)
+  sigma_max: 160  # Maximum noise level (higher = more noise, but more generative diversity)
+  s_churn: 0.0  # Adds stochasticity during sampling (non-zero = more variety, but possibly less stable)
 
-  #todo
-  Constant	Purpose
-LATENT_BATCH_SIZE	Number of 3D shapes to generate at once from the same prompt.
-GUIDANCE_SCALE	Controls how closely the output should follow the prompt. Higher = more faithful.
-USE_FP16	Uses 16-bit floating point instead of 32-bit to save GPU memory and improve speed.
-USE_KARRAS	Enables Karras sampling, a more stable and smooth denoising process.
-KARRAS_STEPS	Number of denoising steps in Karras sampling (more = better quality, slower).
-CLIP_DENOISED	Clamps the denoised output to valid range, prevents artifacts in output.
-PROGRESS	Whether to show a progress bar during latent sampling. Useful in notebooks or CLI.
-SIGMA_MIN	The minimum noise level during diffusion (how much randomness remains at the end).
-SIGMA_MAX	The maximum noise level during diffusion (how blurry the start is).
-S_CHURN	Controls how much noise is added during sampling. 0 = no extra noise (default/stable).
+# Notes:
+# - guidance_scale: [1.0 - 20.0+] → ↑ = more accurate, ↓ = more diverse/creative
+# - batch_size: ↑ = more shapes per run, but ↑ VRAM and time
+# - karras_steps: [32–128+] → ↑ = slower but cleaner meshes
+# - sigma_min/sigma_max: tuning affects detail vs. noise tradeoff
+# - s_churn: [0.0–10.0] → ↑ = more randomness/diversity
+
+
+files:
+ output_dir : "tesseract/outputs"
+ default_format : ['ply']

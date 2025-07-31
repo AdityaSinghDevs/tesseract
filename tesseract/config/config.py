@@ -35,3 +35,7 @@ PROGRESS = cfg["latents"]["progress"]
 SIGMA_MIN = cfg["latents"]["sigma_min"]
 SIGMA_MAX = cfg["latents"]["sigma_max"]
 S_CHURN = cfg["latents"]["s_churn"]
+
+#filesaving
+OUTPUT_DIR = cfg["file"]["output_dir"]
+DEFAULT_FORMATS = cfg["file"]["default_format"] 
