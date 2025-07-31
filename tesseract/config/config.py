@@ -11,9 +11,12 @@ cfg = load_config()
 #General
 PROJECT_NAME = cfg["general"]["project_name"]
 MODEL_NAME = cfg["general"]["model"]
+
+#models
 BASE_MODEL = cfg["general"]["base_model"]
 TRANSMITTER = cfg["general"]["transmitter"]
-SEED = cfg["general"]["seed"]
+
+
 USE_FP16 = cfg["general"]["use_fp16"]
 BATCH_SIZE = cfg["general"]["batch_size"]
 
@@ -38,4 +41,5 @@ S_CHURN = cfg["latents"]["s_churn"]
 
 #filesaving
 OUTPUT_DIR = cfg["file"]["output_dir"]
-DEFAULT_FORMATS = cfg["file"]["default_format"] 
+DEFAULT_FORMATS = cfg["file"]["default_format"]
+BASE_FILE = cfg['file']['base_file']

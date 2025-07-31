@@ -44,7 +44,7 @@ sigma_min : float = SIGMA_MIN,
 s_churn : int = S_CHURN)-> Any:
     
     validate_inputs(prompt, model, diffusion)
-    logger.info(f"Inputs Verified, Starting latent generation from prompt : {prompt}")
+    logger.info(f"Inputs Verified, Starting latent generation from prompt : '{prompt}'")
     
     try:
         latents_outputs = sample_latents(
@@ -62,7 +62,7 @@ s_churn : int = S_CHURN)-> Any:
         sigma_max=sigma_max,
         s_churn=s_churn,
         )
-        logger.info(f"LATENTS LOADED SUCCESFULLY FOR PROMPT : {prompt}")
+        logger.info(f"LATENTS LOADED SUCCESFULLY FOR PROMPT : '{prompt}'")
         
         return latents_outputs
 

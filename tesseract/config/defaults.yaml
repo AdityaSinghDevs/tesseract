@@ -34,4 +34,5 @@ latents:
 
 files:
  output_dir : "tesseract/outputs"
+ base_file : "generated_mesh"
  default_format : ['ply']
