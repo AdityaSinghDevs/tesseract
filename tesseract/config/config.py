@@ -16,8 +16,6 @@ MODEL_NAME = cfg["general"]["model"]
 BASE_MODEL = cfg["general"]["base_model"]
 TRANSMITTER = cfg["general"]["transmitter"]
 
-
-USE_FP16 = cfg["general"]["use_fp16"]
 BATCH_SIZE = cfg["general"]["batch_size"]
 
 #Device
