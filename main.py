@@ -118,5 +118,5 @@ def batch_generate(prompts: List[str], output_dir:str, base_file : str, formats 
 
 
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

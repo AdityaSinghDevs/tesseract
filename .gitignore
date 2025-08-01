@@ -205,3 +205,37 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# === Tesseract Project Custom Ignores ===
+
+# Logs
+*.log
+app.log
+
+# Output meshes (generated files)
+tesseract/outputs/
+outputs/
+
+# Model weights and cache (HuggingFace / Shap-E)
+.cache/
+cache/
+shap_e_cache/
+tesseract/models/
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Temporary runtime / checkpoints
+checkpoints/
+*.ckpt
+*.onnx
+*.pb
+
+# Prevent pushing large latent exports if any
+*.npz
+*.npy
+
+# Local test artifacts
+tmp/
+temp/

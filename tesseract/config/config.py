@@ -31,9 +31,9 @@ USE_KARRAS = cfg["latents"]["use_karras"]
 KARRAS_STEPS = cfg["latents"]["karras_steps"]
 CLIP_DENOISED = cfg["latents"]["clip_denoised"]
 PROGRESS = cfg["latents"]["progress"]
-SIGMA_MIN = cfg["latents"]["sigma_min"]
-SIGMA_MAX = cfg["latents"]["sigma_max"]
-S_CHURN = cfg["latents"]["s_churn"]
+SIGMA_MIN = float(cfg["latents"]["sigma_min"])
+SIGMA_MAX = float(cfg["latents"]["sigma_max"])
+S_CHURN = float(cfg["latents"]["s_churn"])
 
 #files
 OUTPUT_DIR = cfg["files"]["output_dir"]

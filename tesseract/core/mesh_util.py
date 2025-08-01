@@ -3,6 +3,7 @@ import os
 import numpy as np
 import trimesh
 
+import torch
 from ..config.config import OUTPUT_DIR, DEFAULT_FORMATS
 from ..loggers.logger import get_logger
 from .shap_e.util.notebooks import decode_latent_mesh
@@ -11,13 +12,29 @@ logger = get_logger(__name__ , log_file="app.log")
 
 
 def validate_latents_inputs(model : Any , latents : Any)->None:
-   if not model:
+   if model is None:
       logger.error("Model not provided")
       raise ValueError("Model not provided")
+   
+   if latents is None or len(latents) ==0:
+      logger.error("Latents input is empty")
+      raise ValueError("Latents input is empty")
+
    for i, latent in enumerate(latents):
-      if not latent :
+      if latent is None :
          logger.error(f"Latent {i} is empty, Nothing to decode")
          raise ValueError(f"Latent {i} is None, nothing to decode")
+      
+      if isinstance(latent, torch.Tensor):
+         if latent.numel() ==0:
+            logger.error(f"Latent {i} is an empty tensor")
+            raise ValueError(f"Latent {i} is an empty tensor")
+         
+      elif isinstance(latent, (list, tuple)):
+         if len(latent) == 0:
+            logger.error(f"Latent {i} is an empty list/tuple")
+            raise ValueError(f"Latent {i} is empty")
+            
       
 
 def validate_decoded_mesh(mesh : List[Any] , output_dir : str,
@@ -67,7 +84,7 @@ def convert_to_glb(mesh : Any, output_path :str) ->str:
 
 def decode_latents(model : Any, latents: Any)->List[Any]:
 
-    output_mesh = []
+    output_meshes = []
    
     try:
         validate_latents_inputs(model, latents)
@@ -76,17 +93,20 @@ def decode_latents(model : Any, latents: Any)->List[Any]:
        logger.error(f"Inputs for decoding could not be verified : {e}")
        raise
 
-    try: 
-        for i, latent in enumerate(latents):
-         mesh = decode_latent_mesh(model, latent).tri_mesh()
-         output_mesh.append(mesh)
+    
+    for i, latent in enumerate(latents):
+      try: 
+           mesh = decode_latent_mesh(model, latent).tri_mesh()
+           output_meshes.append(mesh)
+      except Exception as e:
+        logger.error(f"Failed to decode latent {i}: {e}", exc_info=True)
 
-        logger.info("Latents decoded successfully into meshes..")
+      if not output_meshes:
+        raise RuntimeError("All latents failed to decode into meshes")
+      
+      logger.info("Latents decoded successfully into meshes..")
 
-        return output_mesh
-    except Exception as e:
-       logger.error(f"Unable to decode latents : {e}")
-       raise
+      return output_meshes
 
 
 
@@ -104,8 +124,11 @@ def save_mesh(meshes : List[Any] , base_file : str,
    logger.info(f"Created/Found output directory at : {output_dir}")
 
    for mesh_id, single_mesh in enumerate(meshes):
+
+      verts = getattr(single_mesh, 'verts', None)
+      faces = getattr(single_mesh, 'faces', None)
       
-      if not getattr(single_mesh, 'verts', None) or not getattr(single_mesh, 'faces', None):
+      if verts is None or faces is None or len(verts) == 0 or len(faces) == 0:
             logger.warning(f"Mesh {mesh_id} is empty; skipping save.")
             continue
       for format in formats:

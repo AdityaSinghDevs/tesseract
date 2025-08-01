@@ -12,7 +12,7 @@ def get_device(use_cuda : bool=USE_CUDA,
 fallback_to_cpu : bool=  FALLBACK_TO_CPU)->torch.device :
      
      if use_cuda and torch.cuda.is_available():
-          device_name = torch.get_device_name(0)
+          device_name = torch.cuda.get_device_name(0)
           logger.info(f"CUDA found, device : {device_name}")
           return torch.device('cuda')
      elif fallback_to_cpu:
@@ -31,10 +31,10 @@ diffusion_config : str = DIFFUSION_CONFIG)-> List[Any]:
           raise TypeError("Device must be a torch.device object")
      
      transmitter_model = load_model(model_name = transmitter, device=device)
-     logger.info(f"Transmitter model loaded : {transmitter_model}")
+     logger.info(f"Transmitter model '{transmitter}' loaded on {device.type}")
 
      text_encoder_model = load_model(model_name = base_model, device=device )
-     logger.info(f"Base model loaded : {base_model}")
+     logger.info(f"Base model loaded : {base_model} loaded on {device.type}")
      
      diffusion_process = diffusion_from_config(load_config(diffusion_config))
      logger.info(f"Diffusion process intitiated...")

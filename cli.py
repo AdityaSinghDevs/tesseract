@@ -74,12 +74,12 @@ def main():
                 return
             
             
-                result = generate_from_prompt(prompt=args.prompt,
-                                            base_file=args.base_file,
-                                            output_dir=args.output_dir,
-                                                formats=args.formats )
-                print(f"\n Generated mesh for prompt : '{args.prompt}'")
-                print(f"\n Saved files : {result['saved_files']}\n")
+            result = generate_from_prompt(prompt=args.prompt,
+                                        base_file=args.base_file,
+                                        output_dir=args.output_dir,
+                                            formats=args.formats )
+            print(f"\n Generated mesh for prompt : '{args.prompt}'")
+            print(f"\n Saved files : {result['saved_files']}\n")
             
         elif args.batch_file:
             if not os.path.exists(args.batch_file):

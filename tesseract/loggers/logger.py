@@ -26,7 +26,8 @@ def get_logger(
         logger.addHandler(console_handler)
 
 
-     base_log_dir = "../../logs"
+     base_log_dir = os.path.join(os.path.dirname(__file__), "..", "..", "logs")
+     base_log_dir = os.path.abspath(base_log_dir)
 
      if log_file:
        
