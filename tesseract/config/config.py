@@ -12,7 +12,7 @@ cfg = load_config()
 PROJECT_NAME = cfg["general"]["project_name"]
 MODEL_NAME = cfg["general"]["model"]
 
-#models
+#General : models
 BASE_MODEL = cfg["general"]["base_model"]
 TRANSMITTER = cfg["general"]["transmitter"]
 
@@ -35,9 +35,9 @@ SIGMA_MIN = cfg["latents"]["sigma_min"]
 SIGMA_MAX = cfg["latents"]["sigma_max"]
 S_CHURN = cfg["latents"]["s_churn"]
 
-#filesaving
-OUTPUT_DIR = cfg["file"]["output_dir"]
-DEFAULT_FORMATS = cfg["file"]["default_format"]
-BASE_FILE = cfg['file']['base_file']
+#files
+OUTPUT_DIR = cfg["files"]["output_dir"]
+DEFAULT_FORMATS = cfg["files"]["default_format"]
+BASE_FILE = cfg["files"]['base_file']
 
 BATCH_SIZE = LATENT_BATCH_SIZE

@@ -13,7 +13,7 @@ from ..config.config import (
     SIGMA_MAX,
     S_CHURN,
 )
-from shap_e.diffusion.sample import sample_latents
+from .shap_e.diffusion.sample import sample_latents
 
 logger = get_logger(__name__, log_file='app.log')
 

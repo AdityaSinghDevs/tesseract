@@ -3,8 +3,8 @@ import torch
 
 from ..config.config import USE_CUDA, FALLBACK_TO_CPU, BASE_MODEL, TRANSMITTER, DIFFUSION_CONFIG
 from ..loggers.logger import get_logger
-from shap_e.models.download import load_model, load_config
-from shap_e.diffusion.gaussian_diffusion import diffusion_from_config
+from .shap_e.models.download import load_model, load_config
+from .shap_e.diffusion.gaussian_diffusion import diffusion_from_config
 
 logger = get_logger(__name__ , log_file= "app.log")
 

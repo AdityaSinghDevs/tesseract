@@ -1,12 +1,14 @@
 from typing import Dict, Any, List
 
+import os, sys
+sys.path.append(os.path.join(os.path.dirname(__file__), "tesseract/core"))
+
 from tesseract.config.config import ( USE_CUDA,FALLBACK_TO_CPU,BASE_MODEL,TRANSMITTER,DIFFUSION_CONFIG, OUTPUT_DIR, DEFAULT_FORMATS, BASE_FILE)
 from tesseract.loggers.logger import get_logger
 from tesseract.core.model_loader import get_device, load_all_models
 from tesseract.core.generator import generate_latents
 from tesseract.core.mesh_util import decode_latents, save_mesh
 
-from cli import main
 
 logger = get_logger(__name__, log_file='app.log')
 

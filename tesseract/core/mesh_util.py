@@ -5,7 +5,7 @@ import trimesh
 
 from ..config.config import OUTPUT_DIR, DEFAULT_FORMATS
 from ..loggers.logger import get_logger
-from shap_e.util.notebooks import decode_latent_mesh
+from .shap_e.util.notebooks import decode_latent_mesh
 
 logger = get_logger(__name__ , log_file="app.log")
 

@@ -1,4 +1,5 @@
 torch
+ipywidgets
 ninja
 filelock
 Pillow
