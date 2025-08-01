@@ -16,8 +16,6 @@ MODEL_NAME = cfg["general"]["model"]
 BASE_MODEL = cfg["general"]["base_model"]
 TRANSMITTER = cfg["general"]["transmitter"]
 
-BATCH_SIZE = cfg["general"]["batch_size"]
-
 #Device
 USE_CUDA = cfg["device"]["use_cuda"]
 FALLBACK_TO_CPU = cfg["device"]["fallback_to_cpu"]
@@ -41,3 +39,5 @@ S_CHURN = cfg["latents"]["s_churn"]
 OUTPUT_DIR = cfg["file"]["output_dir"]
 DEFAULT_FORMATS = cfg["file"]["default_format"]
 BASE_FILE = cfg['file']['base_file']
+
+BATCH_SIZE = LATENT_BATCH_SIZE
