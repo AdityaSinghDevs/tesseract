@@ -55,7 +55,14 @@ def parse_args():
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Run pipeline without generating or saving any files (for testing)"
+        help="Run pipeline without generating or saving any files "
+        "(for testing)"
+    )
+
+    parser.add_argument(
+        "-r", "--resume-latents",
+        action="store_true",
+        help="If set, tries to resume from existing cached latents before generating new one"
     )
 
     return parser.parse_args()
@@ -77,7 +84,8 @@ def main():
             result = generate_from_prompt(prompt=args.prompt,
                                         base_file=args.base_file,
                                         output_dir=args.output_dir,
-                                            formats=args.formats )
+                                            formats=args.formats, 
+                                            resume_latents=args.resume_latents)
             print(f"\n Generated mesh for prompt : '{args.prompt}'")
             print(f"\n Saved files : {result['saved_files']}\n")
             

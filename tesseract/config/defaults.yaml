@@ -17,7 +17,7 @@ latents:
   guidance_scale: 12.0  # Controls prompt adherence (higher = more faithful to prompt, lower = more creative)
   use_fp16: true  # Enables half-precision for reduced memory usage (recommended for most GPUs)
   use_karras: true  # Uses Karras noise schedule for more stable, high-quality generation
-  karras_steps: 40  # Number of denoising steps when using Karras (more steps = smoother results, longer generation time)
+  karras_steps: 30  # Number of denoising steps when using Karras (more steps = smoother results, longer generation time)
   clip_denoised: true  # Prevents over-saturation/artifacts by clamping values to valid range
   progress: true  # Displays a live progress bar during generation (useful in CLI or notebooks)
   sigma_min: 1e-3  # Minimum noise level during diffusion (too low can cause oversharpening)

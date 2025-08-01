@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "tesseract/core"))
 from tesseract.config.config import ( USE_CUDA,FALLBACK_TO_CPU,BASE_MODEL,TRANSMITTER,DIFFUSION_CONFIG, OUTPUT_DIR, DEFAULT_FORMATS, BASE_FILE)
 from tesseract.loggers.logger import get_logger
 from tesseract.core.model_loader import get_device, load_all_models
-from tesseract.core.generator import generate_latents
+from tesseract.core.generator import get_or_generate_latents, generate_latents
 from tesseract.core.mesh_util import decode_latents, save_mesh
 
 
@@ -43,7 +43,7 @@ diffusion_config : str = DIFFUSION_CONFIG
 
 def generate_from_prompt(prompt:str, base_file :str,
                          output_dir : str = OUTPUT_DIR, formats = DEFAULT_FORMATS,
-                         preloaded_pipeline: Dict[str, Any] = None,) ->Dict[str, Any]:
+                         preloaded_pipeline: Dict[str, Any] = None, resume_latents : bool = False) ->Dict[str, Any]:
 
     logger.info(f"Starting generation..")
 
@@ -58,9 +58,15 @@ def generate_from_prompt(prompt:str, base_file :str,
         transmitter_model = pipeline["transmitter"]
         diffusion_process = pipeline["diffusion_process"]
 
-        latents = generate_latents(prompt=prompt, model=text_encoder_model,
-                                   diffusion=diffusion_process )
-        
+        latents = get_or_generate_latents(
+            prompt=prompt,
+            model=text_encoder_model,
+            diffusion=diffusion_process,
+            base_file=base_file,
+            output_dir=output_dir,
+            resume=resume_latents
+        )
+
         meshes = decode_latents(model=transmitter_model, latents= latents)
 
         results = save_mesh(meshes=meshes, base_file=base_file,
@@ -72,7 +78,8 @@ def generate_from_prompt(prompt:str, base_file :str,
             "prompt" : prompt,
             "saved_files":results["saved_files"],
             "output_dir" :output_dir,
-            "mesh_count" : results["count"]
+            "mesh_count" : results["count"],
+            "latents_path" :  os.path.join(output_dir, "latents", f"{base_file}_latents.pt")
         }
     
     except Exception as e:

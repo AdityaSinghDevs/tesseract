@@ -1,4 +1,7 @@
 from typing import Any
+import os
+
+import torch
 
 from ..loggers.logger import get_logger
 from ..config.config import (
@@ -71,4 +74,30 @@ s_churn : float = S_CHURN)-> Any:
         raise 
 
     
+def get_or_generate_latents(prompt: str, 
+                            model : Any, diffusion :Any,
+                            base_file :str, output_dir :str,
+                            resume:bool = False)->Any:
+    
+    latents_dir = os.path.join(output_dir, "latents")
+    os.makedirs(latents_dir, exist_ok=True)
+    latents_path = os.path.join(latents_dir, f"{base_file}_latents.pt")
+                            
+    if resume and os.path.exists(latents_path):
+        try:
+            latents = torch.load(latents_path)
+            logger.info(f"Resuming from cached latents: {latents_path}")
+            return latents
+        except Exception as e:
+            logger.warning(f"Failed to load cached latents ({e}), regenerating...")
+    
+    latents = generate_latents(prompt=prompt, model=model, diffusion=diffusion)
+
+    try:
+        torch.save(latents, latents_path)
+        logger.info(f"Latents saved successfully at {latents_path}")
+    except Exception as e:
+        logger.warning(f"Failed to save latents to disk {e}")
+
+    return latents
 
