@@ -106,7 +106,7 @@ def decode_latents(model : Any, latents: Any)->List[Any]:
       
       logger.info("Latents decoded successfully into meshes..")
 
-      return output_meshes
+    return output_meshes
 
 
 

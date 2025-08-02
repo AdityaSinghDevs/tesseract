@@ -64,7 +64,7 @@ def parse_args():
         action="store_true",
         help="If set, tries to resume from existing cached latents before generating new one"
     )
-
+    
     return parser.parse_args()
 
 

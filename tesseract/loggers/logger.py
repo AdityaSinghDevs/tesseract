@@ -21,6 +21,8 @@ def get_logger(
            console_format = log_format
         else:
             console_format = logging.Formatter("{name}- {levelname} - {message}" , style='{')
+
+            
     
         console_handler.setFormatter(console_format)
         logger.addHandler(console_handler)
