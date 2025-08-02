@@ -1,3 +1,49 @@
 # tesseract
 A modular ML pipeline that uses diffusion driven neural nets, to generate usable 3D Mesh assets from text or image inputs.
- mini research-to-production pipelinen
+ mini research-to-production pipeline
+
+ (tesseract) PS C:\Users\Aditya Pratap Singh\OneDrive\Desktop\Codes\tesseract_project> python cli.py --help
+usage: cli.py [-h] (-p PROMPT | -b BATCH_FILE) [-o OUTPUT_DIR]
+              [-f {ply,obj,glb} [{ply,obj,glb} ...]] [-n BASE_FILE] [--dry-run]
+              [-r] [-bs BATCH_SIZE] [-gs GUIDANCE_SCALE] [--progress]
+              [--clip-denoised] [--use-fp16] [--use-karras]
+              [--karras-steps KARRAS_STEPS] [--sigma-max SIGMA_MAX]
+              [--sigma-min SIGMA_MIN] [--s-churn S_CHURN] [--use-cuda]
+              [--fallback-to-cpu]
+
+TesseractV1 - Text-to-3D generation using Shap-E
+
+options:
+  -h, --help            show this help message and exit
+  -p PROMPT, --prompt PROMPT
+                        Single prompt to generate a 3D mesh
+  -b BATCH_FILE, --batch_file BATCH_FILE
+                        Path to a text file with one prompt per line
+  -o OUTPUT_DIR, --output_dir OUTPUT_DIR
+                        Directory to save generated files (default :
+                        tesseract/outputs)
+  -f {ply,obj,glb} [{ply,obj,glb} ...], --formats {ply,obj,glb} [{ply,obj,glb} ...]
+                        Mesh formats to export (default : ply)
+  -n BASE_FILE, --base_file BASE_FILE
+                        Base name for output files (default : generated_mesh)
+  --dry-run             Run pipeline without generating or saving any files (for
+                        testing)
+  -r, --resume-latents  If set, tries to resume from existing cached latents before
+                        generating new one
+  -bs BATCH_SIZE, --batch-size BATCH_SIZE
+                        Batch size for latent generation (default: 1)
+  -gs GUIDANCE_SCALE, --guidance-scale GUIDANCE_SCALE
+                        Guidance scale for diffusion (default: 12.0)
+  --progress            Show progress bar (default: True)
+  --clip-denoised       Clip denoised samples during generation (default: True)
+  --use-fp16            Use FP16 for faster inference (default: True)
+  --use-karras          Use Karras noise schedule (default: True)
+  --karras-steps KARRAS_STEPS
+                        Number of Karras steps (default: 30)
+  --sigma-max SIGMA_MAX
+                        Maximum sigma for Karras schedule (default: 160.0)
+  --sigma-min SIGMA_MIN
+                        Minimum sigma for Karras schedule (default: 0.001)
+  --s-churn S_CHURN     Sigma churn parameter (default: 0.0)
+  --use-cuda            Force CUDA usage if available (default: True)
+  --fallback-to-cpu     Fallback to CPU if CUDA is unavailable (default: True)

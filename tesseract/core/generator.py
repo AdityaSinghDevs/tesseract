@@ -77,6 +77,16 @@ s_churn : float = S_CHURN)-> Any:
 def get_or_generate_latents(prompt: str, 
                             model : Any, diffusion :Any,
                             base_file :str, output_dir :str,
+                            batch_size : int = LATENT_BATCH_SIZE,
+                            guidance_scale : float = GUIDANCE_SCALE,
+                            progress : bool = PROGRESS,
+                            clip_denoised : bool = CLIP_DENOISED,
+                            use_fp16 : bool = USE_FP16,
+                            use_karras : bool = USE_KARRAS,
+                            karras_steps : int = KARRAS_STEPS,
+                            sigma_max : float = SIGMA_MAX,
+                            sigma_min : float = SIGMA_MIN,
+                            s_churn : float = S_CHURN,
                             resume:bool = False)->Any:
     
     latents_dir = os.path.join(output_dir, "latents")
@@ -91,7 +101,15 @@ def get_or_generate_latents(prompt: str,
         except Exception as e:
             logger.warning(f"Failed to load cached latents ({e}), regenerating...")
     
-    latents = generate_latents(prompt=prompt, model=model, diffusion=diffusion)
+    latents = generate_latents(prompt=prompt, model=model, diffusion=diffusion,
+                               batch_size=batch_size, guidance_scale=guidance_scale,
+                               progress = progress, clip_denoised=clip_denoised,
+                               use_fp16=use_fp16,
+                               use_karras=use_karras,
+                               karras_steps=karras_steps,
+                               sigma_max=sigma_max,
+                               sigma_min=sigma_min,
+                               s_churn=s_churn)
 
     try:
         torch.save(latents, latents_path)

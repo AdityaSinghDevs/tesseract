@@ -3,7 +3,12 @@ from typing import Dict, Any, List
 import os, sys
 sys.path.append(os.path.join(os.path.dirname(__file__), "tesseract/core"))
 
-from tesseract.config.config import ( USE_CUDA,FALLBACK_TO_CPU,BASE_MODEL,TRANSMITTER,DIFFUSION_CONFIG, OUTPUT_DIR, DEFAULT_FORMATS, BASE_FILE)
+from tesseract.config.config import ( USE_CUDA,FALLBACK_TO_CPU,BASE_MODEL,
+                                    TRANSMITTER,DIFFUSION_CONFIG, OUTPUT_DIR,
+                                    DEFAULT_FORMATS, BASE_FILE, LATENT_BATCH_SIZE,
+                                    GUIDANCE_SCALE, USE_FP16, USE_KARRAS, 
+                                    KARRAS_STEPS, CLIP_DENOISED,PROGRESS,
+                                    SIGMA_MIN, SIGMA_MAX, S_CHURN,)
 from tesseract.loggers.logger import get_logger
 from tesseract.core.model_loader import get_device, load_all_models
 from tesseract.core.generator import get_or_generate_latents, generate_latents
@@ -41,9 +46,19 @@ diffusion_config : str = DIFFUSION_CONFIG
         raise RuntimeError(f"Failed to initialize Tesseract pipeline : {e}")
     
 
-def generate_from_prompt(prompt:str, base_file :str,
+def generate_from_prompt(prompt:str, base_file :BASE_FILE,
                          output_dir : str = OUTPUT_DIR, formats = DEFAULT_FORMATS,
-                         preloaded_pipeline: Dict[str, Any] = None, resume_latents : bool = False) ->Dict[str, Any]:
+                         preloaded_pipeline: Dict[str, Any] = None, resume_latents : bool = False,
+                           batch_size : int = LATENT_BATCH_SIZE,
+                            guidance_scale : float = GUIDANCE_SCALE,
+                            progress : bool = PROGRESS,
+                            clip_denoised : bool = CLIP_DENOISED,
+                            use_fp16 : bool = USE_FP16,
+                            use_karras : bool = USE_KARRAS,
+                            karras_steps : int = KARRAS_STEPS,
+                            sigma_max : float = SIGMA_MAX,
+                            sigma_min : float = SIGMA_MIN,
+                            s_churn : float = S_CHURN,) ->Dict[str, Any]:
 
     logger.info(f"Starting generation..")
 
@@ -64,7 +79,15 @@ def generate_from_prompt(prompt:str, base_file :str,
             diffusion=diffusion_process,
             base_file=base_file,
             output_dir=output_dir,
-            resume=resume_latents
+            resume=resume_latents,
+            batch_size=batch_size, guidance_scale=guidance_scale,
+            progress = progress, clip_denoised=clip_denoised,
+            use_fp16=use_fp16,
+            use_karras=use_karras,
+            karras_steps=karras_steps,
+            sigma_max=sigma_max,
+            sigma_min=sigma_min,
+            s_churn=s_churn
         )
 
         meshes = decode_latents(model=transmitter_model, latents= latents)
