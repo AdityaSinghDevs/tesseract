@@ -54,17 +54,20 @@ def generate_from_prompt(prompt:str, base_file :BASE_FILE,
                             progress : bool = PROGRESS,
                             clip_denoised : bool = CLIP_DENOISED,
                             use_fp16 : bool = USE_FP16,
+                            use_cuda : bool = USE_CUDA,
                             use_karras : bool = USE_KARRAS,
                             karras_steps : int = KARRAS_STEPS,
                             sigma_max : float = SIGMA_MAX,
                             sigma_min : float = SIGMA_MIN,
-                            s_churn : float = S_CHURN,) ->Dict[str, Any]:
+                            s_churn : float = S_CHURN,
+                            fallback_to_cpu : bool = FALLBACK_TO_CPU) ->Dict[str, Any]:
 
     logger.info(f"Starting generation..")
 
     try:
         if not preloaded_pipeline :
-            pipeline = initialize_pipeline()
+            pipeline = initialize_pipeline(use_cuda = use_cuda,
+        fallback_to_cpu = fallback_to_cpu)
         else :
             pipeline = preloaded_pipeline
             logger.info("Loading from preloaded pipeline..")

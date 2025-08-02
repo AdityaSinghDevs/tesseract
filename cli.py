@@ -168,12 +168,13 @@ def main():
                                         progress=args.progress,
                                         clip_denoised=args.clip_denoised,
                                         use_fp16=args.use_fp16,
+                                        use_cuda=args.use_cuda,
                                         use_karras=args.use_karras,
                                         karras_steps=args.karras_steps,
                                         sigma_max=args.sigma_max,
                                         sigma_min=args.sigma_min,
                                         s_churn=args.s_churn,
-                                        use_cuda=args.use_cuda,
+                                        
                                         fallback_to_cpu=args.fallback_to_cpu,)
             print(f"\n Generated mesh for prompt : '{args.prompt}'")
             print(f"\n Saved files : {result['saved_files']}\n")
