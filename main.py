@@ -112,13 +112,31 @@ def generate_from_prompt(prompt:str, base_file :BASE_FILE,
         logger.error(f"Generation failed : {e}")
         raise RuntimeError(f"Generation failed due to error : {e}")
 
-def batch_generate(prompts: List[str], output_dir:str, base_file : str, formats = DEFAULT_FORMATS):
+def batch_generate(prompts: List[str], output_dir:str, base_file : str, formats = DEFAULT_FORMATS,
+                   preloaded_pipeline: Dict[str, Any] = None, resume_latents : bool = False,
+                           batch_size : int = LATENT_BATCH_SIZE,
+                            guidance_scale : float = GUIDANCE_SCALE,
+                            progress : bool = PROGRESS,
+                            clip_denoised : bool = CLIP_DENOISED,
+                            use_fp16 : bool = USE_FP16,
+                            use_cuda : bool = USE_CUDA,
+                            use_karras : bool = USE_KARRAS,
+                            karras_steps : int = KARRAS_STEPS,
+                            sigma_max : float = SIGMA_MAX,
+                            sigma_min : float = SIGMA_MIN,
+                            s_churn : float = S_CHURN,
+                            fallback_to_cpu : bool = FALLBACK_TO_CPU):
 
         logger.info(f"Batch generation started for : {len(prompts)}")
         all_results = []
 
         try:
-            pipeline = initialize_pipeline()
+            if not preloaded_pipeline :
+                pipeline = initialize_pipeline(use_cuda = use_cuda,
+         fallback_to_cpu = fallback_to_cpu)
+            else :
+                pipeline = preloaded_pipeline
+            logger.info("Loading from preloaded pipeline..")
         except Exception as e:
             logger.error(f"Failed to intialize pipeline for batch : {e}")
         
@@ -134,7 +152,18 @@ def batch_generate(prompts: List[str], output_dir:str, base_file : str, formats 
                     prompt=prompt,
                     output_dir=output_dir,
                     base_file=file_prefix,
-                    formats=formats)
+                    formats=formats,
+            base_file=base_file,
+            output_dir=output_dir,
+            resume=resume_latents,
+            batch_size=batch_size, guidance_scale=guidance_scale,
+            progress = progress, clip_denoised=clip_denoised,
+            use_fp16=use_fp16,
+            use_karras=use_karras,
+            karras_steps=karras_steps,
+            sigma_max=sigma_max,
+            sigma_min=sigma_min,
+            s_churn=s_churn)
                 all_results.append(result)
                 logger.info(f"[{idx+1}/{len(prompts)}] Generated for {prompt} saved successfully ")
             except Exception as e:

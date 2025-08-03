@@ -197,7 +197,21 @@ def main():
                 prompts=prompts, 
                 output_dir=args.output_dir, 
                 base_file=args.base_file,
-                formats=args.formats
+                formats=args.formats,
+                resume_latents=args.resume_latents,
+                                        batch_size=args.batch_size,
+                                        guidance_scale=args.guidance_scale,
+                                        progress=args.progress,
+                                        clip_denoised=args.clip_denoised,
+                                        use_fp16=args.use_fp16,
+                                        use_cuda=args.use_cuda,
+                                        use_karras=args.use_karras,
+                                        karras_steps=args.karras_steps,
+                                        sigma_max=args.sigma_max,
+                                        sigma_min=args.sigma_min,
+                                        s_churn=args.s_churn,
+                                        
+                                        fallback_to_cpu=args.fallback_to_cpu,
                 )
             
             
