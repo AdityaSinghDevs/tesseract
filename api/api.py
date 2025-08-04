@@ -41,3 +41,14 @@ def check_status(job_id : str):
         return {"error" : "job not found" }
     return job
 
+
+@app.get("/download/{job_id}")
+def download_file(job_id : str):
+    job = JOBS.get(job_id)
+    if not job :
+        return {"error" : "job not found" }
+    if job["status"] != "done":
+        return {"status":job["status"], "message" : "File not ready yet"}
+    
+    file_path = job["files"][0]
+    return FileResponse(file_path, filename = os.path.basename(file_path))
