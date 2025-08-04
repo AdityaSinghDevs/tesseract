@@ -1,13 +1,14 @@
 from typing import Union
+import os
 
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
+
+from ..main import generate_from_prompt
 
 app = FastAPI()
 
-@app.get("/")
-def read_root():
-    return {"Hello": "world"}
+JOBS = {}
 
-@app.get("/items/{item_id}")
-def read_item(item_id : int, q : Union[str, None] = None):
-    return {"item_id" : item_id, "q" : q}
+os.makedirs("../tesseract/outputs", exist_ok=True)
+
