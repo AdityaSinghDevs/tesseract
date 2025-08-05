@@ -43,5 +43,6 @@ BASE_FILE = cfg["files"]['base_file']
 BATCH_SIZE = LATENT_BATCH_SIZE
 
 #render
+RENDER_INSTANCE = cfg["render"]["render"]
 RENDER_MODE = cfg["render"]["render_mode"]
 RENDER_SIZE = cfg["render"]["size"]

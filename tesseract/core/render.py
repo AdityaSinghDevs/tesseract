@@ -22,13 +22,21 @@ def validate_render_inputs(device, latents, size):
 
     if not isinstance(size, int) or size <= 0:
         raise ValueError(f"Render size must be a positive int, got {size}")
+    
+def in_notebook() -> bool:
+    """Detect if running in Jupyter Notebook or Lab."""
+    try:
+        from IPython import get_ipython
+        shell = get_ipython().__class__.__name__
+        return shell == 'ZMQInteractiveShell'  # Jupyter/Colab
+    except Exception:
+        return False
 
 def render_image(device : torch.device,
                  latents : Any,
                  transmitter : str = TRANSMITTER,
                  size : int = RENDER_SIZE,
                  render_mode : str = RENDER_MODE,
-                 cli_preview : bool = True,
                  )->Any :
     
     validate_render_inputs(device, latents, size)
@@ -59,15 +67,12 @@ def render_image(device : torch.device,
         widget  = gif_widget(images)
 
 
-        try : 
-            get_ipython #type: ignore
+        if in_notebook(): 
             from IPython.display import display
             display(widget)
             logger.info(f"Latent {i} rendered in notebook")
-        except NameError:
-            pass
 
-        if cli_preview and sys.stdout.isatty():
+        elif sys.stdout.isatty():
             try:
                 with tempfile.NamedTemporaryFile("w", delete=False, suffix=".html") as f:
                     f.write(widget._repr_html_())

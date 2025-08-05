@@ -40,4 +40,4 @@ files:
 render:
   render_mode : 'nerf'
   size : 64
-  
+  render : false

@@ -8,11 +8,12 @@ from tesseract.config.config import ( USE_CUDA,FALLBACK_TO_CPU,BASE_MODEL,
                                     DEFAULT_FORMATS, BASE_FILE, LATENT_BATCH_SIZE,
                                     GUIDANCE_SCALE, USE_FP16, USE_KARRAS, 
                                     KARRAS_STEPS, CLIP_DENOISED,PROGRESS,
-                                    SIGMA_MIN, SIGMA_MAX, S_CHURN,)
+                                    SIGMA_MIN, SIGMA_MAX, S_CHURN,RENDER_MODE,RENDER_SIZE)
 from tesseract.loggers.logger import get_logger
 from tesseract.core.model_loader import get_device, load_all_models
 from tesseract.core.generator import get_or_generate_latents, generate_latents
 from tesseract.core.mesh_util import decode_latents, save_mesh
+from tesseract.core.render import render_image
 
 
 logger = get_logger(__name__, log_file='app.log')
@@ -37,6 +38,7 @@ diffusion_config : str = DIFFUSION_CONFIG
             "transmitter" : transmitter_model,
             "text_encoder_model" : text_encoder_model,
             "diffusion_process" : diffusion_process,
+            "device" : device
         }
 
         logger.info("Pipeline initiated successfully and ready for generation.")
@@ -60,7 +62,8 @@ def generate_from_prompt(prompt:str, base_file :BASE_FILE,
                             sigma_max : float = SIGMA_MAX,
                             sigma_min : float = SIGMA_MIN,
                             s_churn : float = S_CHURN,
-                            fallback_to_cpu : bool = FALLBACK_TO_CPU) ->Dict[str, Any]:
+                            fallback_to_cpu : bool = FALLBACK_TO_CPU,
+                            render : bool = False) ->Dict[str, Any]:
 
     logger.info(f"Starting generation..")
 
@@ -75,6 +78,7 @@ def generate_from_prompt(prompt:str, base_file :BASE_FILE,
         text_encoder_model = pipeline["text_encoder_model"]
         transmitter_model = pipeline["transmitter"]
         diffusion_process = pipeline["diffusion_process"]
+        device = pipeline["device"]
 
         latents = get_or_generate_latents(
             prompt=prompt,
@@ -92,6 +96,11 @@ def generate_from_prompt(prompt:str, base_file :BASE_FILE,
             sigma_min=sigma_min,
             s_churn=s_churn
         )
+
+        if render :
+            logger.info("Rendering turnt on...")
+            render_image(device=device, latents=latents, size=RENDER_SIZE,
+                         render_mode=RENDER_MODE)
 
         meshes = decode_latents(model=transmitter_model, latents= latents)
 

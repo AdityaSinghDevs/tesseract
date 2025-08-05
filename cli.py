@@ -7,7 +7,7 @@ from tesseract.config.config import ( USE_CUDA,FALLBACK_TO_CPU, OUTPUT_DIR,
                                     DEFAULT_FORMATS, BASE_FILE, LATENT_BATCH_SIZE,
                                     GUIDANCE_SCALE, USE_FP16, USE_KARRAS, 
                                     KARRAS_STEPS, CLIP_DENOISED,PROGRESS,
-                                    SIGMA_MIN, SIGMA_MAX, S_CHURN,)
+                                    SIGMA_MIN, SIGMA_MAX, S_CHURN,RENDER_INSTANCE)
 from main import generate_from_prompt, batch_generate
 
 
@@ -140,6 +140,13 @@ def parse_args():
         action="store_true", 
         default=FALLBACK_TO_CPU,
         help=f"Fallback to CPU if CUDA is unavailable (default: {FALLBACK_TO_CPU})")
+    
+    parser.add_argument(
+        "--render",
+        action="store_true",
+        default=RENDER_INSTANCE,
+        help=f"Show rendered outputs in notebook or web browser (default : {RENDER_INSTANCE})"
+    )
 
 
     return parser.parse_args()
@@ -174,8 +181,8 @@ def main():
                                         sigma_max=args.sigma_max,
                                         sigma_min=args.sigma_min,
                                         s_churn=args.s_churn,
-                                        
-                                        fallback_to_cpu=args.fallback_to_cpu,)
+                                        fallback_to_cpu=args.fallback_to_cpu,
+                                        render=args.render)
             print(f"\n Generated mesh for prompt : '{args.prompt}'")
             print(f"\n Saved files : {result['saved_files']}\n")
             
