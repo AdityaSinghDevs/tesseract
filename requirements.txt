@@ -1,5 +1,5 @@
 torch
-'fastapi[standard]'
+# 'fastapi[standard]'
 ipywidgets
 ninja
 filelock

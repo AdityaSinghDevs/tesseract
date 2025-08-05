@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, BackgroundTasks, APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
-from schemas import GenerateRequests, GenerateResponse, ErrorResponse
+from .schemas import GenerateRequests, GenerateResponse, ErrorResponse
 from ..main import generate_from_prompt, initialize_pipeline, BASE_FILE, OUTPUT_DIR
 from ..tesseract.loggers.logger import get_logger
 
@@ -59,71 +59,55 @@ def process_generation_job(job_id: str, request: GenerateRequests):
         logger.info(f"JOb {job_id} completed ({result['mesh_count']} meshes)")
 
     except Exception as e:
-        
+        JOBS[job_id]["status"] = "failed"
+        JOBS[job_id]["error"] = str(e)
+        logger.error(f" Job {job_id} failed: {e}", exc_info=True)
 
 
+@router.post("/generate")
+async def generate_endpoint(request: GenerateRequests,
+                            background_tasks : BackgroundTasks):
+    job_id = str(uuid.uuid4())
+    JOBS[job_id] = {"status": "pending", "result":None, "error":None}
 
+    background_tasks.add_task(process_generation_job, job_id, request)
+    logger.info(f"Job {job_id} queued for prompt '{request.prompt}'")
 
+    return {
+        "status": "accepted",
+        "job_id": job_id,
+        "message": "Job queued successfully. Poll /api/v1/status/{job_id} for updates."
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-JOBS : Dict[str, Dict] = {} #in memory job store
-
-
-@app.post("/generate")
-def generate_endpoint(prompt:str, fmt:str = 'ply', background_tasks : BackgroundTasks = None):
-
-    job_id = str(uuid.uuid4()) #creatin a random id
-    JOBS[job_id] ={"status" : "queued" , #initializing its  initial values
-                   "files": []}
-    
-    def run_generation(): #fn made to run
-        JOBS[job_id]["status"] = "running" #status updated
-        result = generate_from_prompt(prompt=prompt ,
-                                         formats= fmt,  base_file=BASE_FILE,
-                                         output_dir=OUTPUT_DIR,
-                                         )
-        
-        JOBS[job_id]["status"] = "done" #result info saved
-        JOBS[job_id]["files"] = result["saved_files"]
-
-    background_tasks.add_task(run_generation)
-
-    return {"job_id" : job_id, "status" : "queued"}
-
-@app.get("/status/{job_id}")
-def check_status(job_id : str):
+@router.get("/status/{job_id}")
+async def check_status(job_id: str):
     job = JOBS.get(job_id)
     if not job:
-        return {"error" : "job not found" }
-    return job
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
+    return {"job_id": job_id, "status": job["status"]}
 
 
-@app.get("/download/{job_id}")
-def download_file(job_id : str):
+@router.get("/download/{job_id}")
+async def download_files(job_id:str):
     job = JOBS.get(job_id)
-    if not job :
-        return {"error" : "job not found" }
-    if job["status"] != "done":
-        return {"status":job["status"], "message" : "File not ready yet"}
+    if not job:
+        raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
     
-    file_path = job["files"][0]
-    return FileResponse(file_path, filename = os.path.basename(file_path))
+    if job["status"] != "completed" or not job["result"]:
+        raise HTTPException(status_code=400, detail="Job not completed yet")
+    
+    output_dir = job["result"]["output_dir"]
+    saved_files = job["result"]["saved_files"]
 
-# @app.get("/render")
-# def render_endpoint():
-#     images = decode_latent_images(...)
-#     widget = gif_widget(images)
-#     return HTMLResponse(widget._repr_html_())
+    if not saved_files:
+       raise HTTPException(status_code=404, detail="No files available to download")  
+    
+    zip_path = os.path.join(output_dir, f"{job_id}_meshes.zip")
+    with zipfile.ZipFile(zip_path, "w") as zipf:
+        for file in saved_files:
+            if os.path.exists(file):
+                zipf.write(file, arcname=os.path.basename(file))
+
+    return FileResponse(zip_path, filename=f"{job_id}_meshes.zip", media_type = "application/zip")
+
+
