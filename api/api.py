@@ -5,13 +5,46 @@ import uuid
 from fastapi import FastAPI, BackgroundTasks
 from fastapi.responses import FileResponse
 
-from ..main import generate_from_prompt, BASE_FILE, OUTPUT_DIR
+from ..main import generate_from_prompt, initialize_pipeline, BASE_FILE, OUTPUT_DIR
+from ..tesseract.loggers.logger import get_logger
+
+logger = get_logger(__name__, log_file='api.log')
 
 app = FastAPI()
 
-JOBS : Dict[str, Dict] = {} #in memory job store
+logger.info("Starting FastApi server...")
+
+PIPELINE = initialize_pipeline()
 
 os.makedirs(OUTPUT_DIR, exist_ok=True) #making surre ouput dir exists
+
+@app.get("/")
+def root():
+    return ("Hello this is the root route for this api endpoint")
+
+@app.post("/generate")
+def 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+JOBS : Dict[str, Dict] = {} #in memory job store
+
 
 @app.post("/generate")
 def generate_endpoint(prompt:str, fmt:str = 'ply', background_tasks : BackgroundTasks = None):
