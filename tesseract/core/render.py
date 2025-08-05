@@ -13,6 +13,16 @@ from ..config.config import RENDER_MODE,RENDER_SIZE,TRANSMITTER
 
 logger = get_logger(__name__, log_file="app.log")
 
+def validate_render_inputs(device, latents, size):
+    if not isinstance(device, torch.device):
+        raise TypeError(f"Expected torch.device, got {type(device)}")
+
+    if latents is None or len(latents) == 0:
+        raise ValueError("No latents provided for rendering.")
+
+    if not isinstance(size, int) or size <= 0:
+        raise ValueError(f"Render size must be a positive int, got {size}")
+
 def render_image(device : torch.device,
                  latents : Any,
                  transmitter : str = TRANSMITTER,
@@ -20,6 +30,9 @@ def render_image(device : torch.device,
                  render_mode : str = RENDER_MODE,
                  cli_preview : bool = True,
                  )->Any :
+    
+    validate_render_inputs(device, latents, size)
+    logger.info("Inputs for Rendering Validated")
     
     logger.info("Initializing Rendering..")
 
@@ -29,16 +42,16 @@ def render_image(device : torch.device,
         logger.info("Cameras set successfully")
     except Exception as e:
         logger.error(f"Unable to setup cameras : {e}")
-        raise RuntimeError(f"Camera initialization failed : " {str(e)})
+        raise RuntimeError(f"Camera initialization failed : {str(e)}" )
     
-    output_files = []
+    # output_files = []
     
     for i, latent in enumerate(latents):
         try:
             images = decode_latent_images(xm=transmitter,
                                         latent=latent,
                                         rendering_mode=render_mode)
-            output_files.append(images)
+            # output_files.append(images)
         except Exception as e:
             logger.error(f"Decoding latent {i} failed: {e}")
             continue
@@ -56,8 +69,8 @@ def render_image(device : torch.device,
 
         if cli_preview and sys.stdout.isatty():
             try:
-                with tempfile.NamedtemporaryFile("w", delete=False, suffix=".html") as f:
-                    f.write(widget,_repr_html_())
+                with tempfile.NamedTemporaryFile("w", delete=False, suffix=".html") as f:
+                    f.write(widget._repr_html_())
                     temp_html = f.name
                     webbrowser.open(f"file://{temp_html}")
                 logger.info(f"Opened latent {i} in web browser.")
