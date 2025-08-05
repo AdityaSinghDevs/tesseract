@@ -13,7 +13,7 @@ from tesseract.loggers.logger import get_logger
 from tesseract.core.model_loader import get_device, load_all_models
 from tesseract.core.generator import get_or_generate_latents, generate_latents
 from tesseract.core.mesh_util import decode_latents, save_mesh
-from tesseract.core.render import render_image
+# from tesseract.core.render_core import render_image
 
 
 logger = get_logger(__name__, log_file='app.log')
@@ -62,8 +62,7 @@ def generate_from_prompt(prompt:str, base_file :BASE_FILE,
                             sigma_max : float = SIGMA_MAX,
                             sigma_min : float = SIGMA_MIN,
                             s_churn : float = S_CHURN,
-                            fallback_to_cpu : bool = FALLBACK_TO_CPU,
-                            render : bool = False) ->Dict[str, Any]:
+                            fallback_to_cpu : bool = FALLBACK_TO_CPU,) ->Dict[str, Any]:
 
     logger.info(f"Starting generation..")
 
@@ -97,10 +96,10 @@ def generate_from_prompt(prompt:str, base_file :BASE_FILE,
             s_churn=s_churn
         )
 
-        if render :
-            logger.info("Rendering turnt on...")
-            render_image(device=device, latents=latents, size=RENDER_SIZE,
-                         render_mode=RENDER_MODE)
+        # if render :
+        #     logger.info("Rendering turnt on...")
+        #     render_image(device=device, latents=latents, size=RENDER_SIZE,
+        #                  render_mode=RENDER_MODE, transmitter=transmitter_model)
 
         meshes = decode_latents(model=transmitter_model, latents= latents)
 

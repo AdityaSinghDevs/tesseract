@@ -1,29 +1,65 @@
-from typing import Union, Dict
+from typing import Dict
 import os
+import zipfile
 import uuid
+from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI, BackgroundTasks, APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
+from schemas import GenerateRequests, GenerateResponse, ErrorResponse
 from ..main import generate_from_prompt, initialize_pipeline, BASE_FILE, OUTPUT_DIR
 from ..tesseract.loggers.logger import get_logger
 
 logger = get_logger(__name__, log_file='api.log')
 
-app = FastAPI()
+router = APIRouter(prefix ="/api/v1", tags=[])
 
-logger.info("Starting FastApi server...")
+PIPELINE = None
+JOBS: Dict[str, Dict] = {}
 
-PIPELINE = initialize_pipeline()
 
-os.makedirs(OUTPUT_DIR, exist_ok=True) #making surre ouput dir exists
+@asynccontextmanager
+async def lifespan(app):
+    global PIPELINE
+    try:
+        logger.info("Startinng up FastAPI app and initializing pipeline...")
+        PIPELINE = initialize_pipeline()
+        logger.info("Pipeline initiated successfully.")
+        yield
+    finally:
+        logger.info("Shutting down FastAPI app. Cleanup if needed.")
 
-@app.get("/")
-def root():
-    return ("Hello this is the root route for this api endpoint")
+def process_generation_job(job_id: str, request: GenerateRequests):
+    JOBS[job_id]["status"] = "running"
 
-@app.post("/generate")
-def 
+    try:
+        logger.info(f"JOb {job_id} started: prompt = '{request.prompt}'")
+
+        result = generate_from_prompt(
+            prompt=request.prompt,
+            base_file=request.base_file,
+            output_dir="tesseract/tesseract/outputs",
+            formats = request.formats,
+            preloaded_pipeline=PIPELINE,
+            resume_latents = request.resume_latents
+        )
+
+        JOBS[job_id]["status"] = "completed"
+        JOBS[job_id]["result"] = GenerateResponse(
+            status="success",
+            prompt=result["prompt"],
+            mesh_count=result["mesh_count"],
+            saved_files=result["saved_files"],
+            latents_path=result.get("latents_path"),
+            output_dir=result.get("output_dir"),
+            job_id=job_id,
+        ).model_dump()
+
+        logger.info(f"JOb {job_id} completed ({result['mesh_count']} meshes)")
+
+    except Exception as e:
+        
 
 
 

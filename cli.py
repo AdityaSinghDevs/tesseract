@@ -141,12 +141,12 @@ def parse_args():
         default=FALLBACK_TO_CPU,
         help=f"Fallback to CPU if CUDA is unavailable (default: {FALLBACK_TO_CPU})")
     
-    parser.add_argument(
-        "--render",
-        action="store_true",
-        default=RENDER_INSTANCE,
-        help=f"Show rendered outputs in notebook or web browser (default : {RENDER_INSTANCE})"
-    )
+    # parser.add_argument(
+    #     "--render",
+    #     action="store_true",
+    #     default=RENDER_INSTANCE,
+    #     help=f"Show rendered outputs in notebook or web browser (default : {RENDER_INSTANCE})"
+    # )
 
 
     return parser.parse_args()
@@ -182,7 +182,7 @@ def main():
                                         sigma_min=args.sigma_min,
                                         s_churn=args.s_churn,
                                         fallback_to_cpu=args.fallback_to_cpu,
-                                        render=args.render)
+                                        )
             print(f"\n Generated mesh for prompt : '{args.prompt}'")
             print(f"\n Saved files : {result['saved_files']}\n")
             
