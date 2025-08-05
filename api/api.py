@@ -85,3 +85,9 @@ def download_file(job_id : str):
     
     file_path = job["files"][0]
     return FileResponse(file_path, filename = os.path.basename(file_path))
+
+# @app.get("/render")
+# def render_endpoint():
+#     images = decode_latent_images(...)
+#     widget = gif_widget(images)
+#     return HTMLResponse(widget._repr_html_())
