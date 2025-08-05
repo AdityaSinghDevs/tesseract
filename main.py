@@ -162,8 +162,6 @@ def batch_generate(prompts: List[str], output_dir:str, base_file : str, formats 
                     output_dir=output_dir,
                     base_file=file_prefix,
                     formats=formats,
-            base_file=base_file,
-            output_dir=output_dir,
             resume=resume_latents,
             batch_size=batch_size, guidance_scale=guidance_scale,
             progress = progress, clip_denoised=clip_denoised,
