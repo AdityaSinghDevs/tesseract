@@ -7,9 +7,9 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, BackgroundTasks, APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
-from .schemas import GenerateRequests, GenerateResponse, ErrorResponse
-from ..main import generate_from_prompt, initialize_pipeline, BASE_FILE, OUTPUT_DIR
-from ..tesseract.loggers.logger import get_logger
+from ..api.schemas import GenerateRequests, GenerateResponse, ErrorResponse
+from main import generate_from_prompt, initialize_pipeline, BASE_FILE, OUTPUT_DIR
+from tesseract.loggers.logger import get_logger
 
 logger = get_logger(__name__, log_file='api.log')
 
@@ -39,10 +39,13 @@ def process_generation_job(job_id: str, request: GenerateRequests):
         result = generate_from_prompt(
             prompt=request.prompt,
             base_file=request.base_file,
+            guidance_scale=request.guidance_scale,
+            karras_steps=request.karras_steps,
             output_dir="tesseract/tesseract/outputs",
             formats = request.formats,
             preloaded_pipeline=PIPELINE,
             resume_latents = request.resume_latents
+            
         )
 
         JOBS[job_id]["status"] = "completed"

@@ -6,11 +6,17 @@ class GenerateRequests(BaseModel):
     
     base_file : Optional[str] = Field("generated_mesh", description = "Base Filename for output meshes")
 
+    guidance_scale : Optional[int] = Field(12 , description = "Guidance scale for results")
+
+    karras_steps : Optional[int] = Field(30, description= "Number of steps taken for generation")
+
     formats: List[str] = Field(default_factory = lambda: ["ply"] , description = "Mesh formats to export")
 
     resume_latents : bool = Field(False, description = "Resume from cached latents if available")
 
     render_latents : bool = Field(False, description = "Render latents for direct preview")
+
+
 
 
 
@@ -28,4 +34,3 @@ class ErrorResponse(BaseModel):
     status: str = Field("error")
     message : str
 
-    

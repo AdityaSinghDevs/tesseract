@@ -1,8 +1,8 @@
 import uvicorn
 from fastapi import FastAPI
 
-from .api.api import router, lifespan
-from .tesseract.loggers.logger import get_logger
+from api.api import router, lifespan
+from tesseract.loggers.logger import get_logger
 
 logger = get_logger(__name__, log_file="server.log")
 
