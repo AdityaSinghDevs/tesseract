@@ -94,6 +94,177 @@ tesseract/
 └── LICENCE                   # Project license
 ```
 
+# Usage
+
+## Running the API
+
+### Local Development
+
+Start the API server using one of the following methods:
+
+```bash
+# Run with uvicorn
+uvicorn app:app --reload --host 0.0.0.0 --port 8000
+
+# Or use the FastAPI dev runner
+fastapi dev app.py
+```
+
+After startup, the following endpoints are available:
+
+- **Swagger UI**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+- **ReDoc**: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+- **Health Check**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+
+## Running via CLI
+
+### Quick Examples
+
+```bash
+# Simplest way to run 
+python cli.py -p "A simple chair"
+
+# Recommmended tweaks for good results 
+python cli.py -p "A simple chair" -gs 30 --karras-steps 64 -bs 4
+
+# Full generation with custom parameters
+python cli.py -p "A simple chair" -n my_chair -o tesseract/outputs -f ply glb -bs 2 -gs 20 --karras-steps 64 --use-fp16 --use-karras
+
+# Batch processing from file
+python cli.py -b prompts.txt -o output_folder -f obj glb --karras-steps 25
+
+# Single prompt with dry run (testing configuration)
+python cli.py -p "A simple chair" --dry-run
+```
+
+### Key CLI Parameters
+
+| Flag | Description |
+|------|-------------|
+| `-p, --prompt` | Single text prompt to generate a 3D mesh |
+| `-b, --batch_file` | Path to text file with one prompt per line |
+| `-f, --formats` | Output formats: `ply`, `obj`, `glb` (default: ply) |
+| `-n, --base_file` | Base filename for output files (default: generated_mesh) |
+| `-bs, --batch-size` | Number of shapes(outputs) per prompt (default: 1) |
+| `-gs, --guidance-scale` | Prompt adherence strength (default: 12.0) |
+| `--karras-steps` | Denoising steps for quality (default: 30) |
+| `--use-fp16` | Enable half-precision for memory efficiency (Default : On) |
+| `-r, --resume-latents` | Resume from cached latents if available |
+| `--dry-run` | Test configuration without generating files |
+
+<!-- Use `--help` to see all available commands and their default values. -->
+
+- Further details about each configuration is given in [this](!Configuration) section
+
+*Use `--help` or `-h` with CLI to see the complete list of available options and their current default values.*
+
+#### Example 
+`python cli.py --help`
+
+## API Examples
+
+### Example API Calls
+
+```bash
+# Submit a generation job
+curl -X POST "http://127.0.0.1:8000/api/v1/generate" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A stylized wooden bench",
+    "base_file": "bench_v1",
+    "formats": ["ply"],
+    "resume_latents": false
+  }'
+
+# Check job status
+curl "http://127.0.0.1:8000/api/v1/status/<job_id>"
+
+# Download generated meshes as ZIP
+curl -O -J "http://127.0.0.1:8000/api/v1/download/<job_id>"
+```
+
+### API Documentation
+
+- **Interactive Docs**: [Swagger UI](http://127.0.0.1:8000/docs)
+- **Static Docs**: [ReDoc](http://127.0.0.1:8000/redoc)
+
+## Configuration
+
+Tesseract uses `defaults.yaml` for runtime configuration. Modify these settings to tune generation behavior and resource usage.
+You can refer to `defaults.yaml` file for understanding detailed effects of each parameter.
+
+### Configuration Parameters Explained
+
+#### General Settings
+- **`project_name`**: Project identifier for logs and metadata
+- **`model`**: Underlying model family (`shap-e`)
+- **`base_model`**: Text-conditioned model variant (`text300M`)
+- **`transmitter`**: Renderer model identifier
+- **`seed`**: Random seed for reproducible results
+
+#### Device Settings
+- **`use_cuda`**: Enable CUDA acceleration when available
+- **`fallback_to_cpu`**: Allow CPU fallback if CUDA unavailable
+
+#### Latent Generation Parameters
+- **`batch_size`**: Range `[1-8+]` - Higher values increase memory usage
+- **`guidance_scale`**: Range `[1.0-20.0+]` - Controls prompt fidelity vs creativity
+- **`karras_steps`**: Range `[15-128+]` - More steps = higher quality, slower generation
+- **`sigma_min/max`**: Noise level bounds affecting detail vs noise tradeoff
+- **`s_churn`**: Range `[0.0-10.0]` - Adds randomness/diversity to sampling
+
+#### File Management
+- **`output_dir`**: Directory for generated meshes and assets
+- **`base_file`**: Default filename template
+- **`default_format`**: Supported formats: `ply`, `obj`, `glb`
+
+#### Rendering Options (Experimental)
+- **`render_mode`**: Preview rendering engine (`nerf`)
+- **`size`**: Preview resolution for images/GIFs
+- **`render`**: Enable/disable automatic preview generation
+
+### Performance Tuning Tips
+
+**For Limited GPU Memory:**
+- Set `batch_size: 1`
+- Start with `karras_steps: 20-25`
+- Enable `use_fp16: true`
+
+**For Quality vs Speed:**
+- **Higher Quality**: Increase `karras_steps` (50-100), `guidance_scale` (20+)
+- **Faster Generation [NOT RECOMMENDED]**: Decrease `karras_steps` (10-15), `guidance_scale` (8-12)
+
+**For Creative vs Faithful Output:**
+- **More Creative**: Lower `guidance_scale` (5-10)
+- **More Faithful**: Higher `guidance_scale` (15-25)
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+
+You are free to:
+
+• Use, modify, and distribute this software for personal, academic, or commercial purposes  
+• Clone it for research, testing, or improvement  
+• Run it locally or in production environments  
+
+You must:
+
+• Keep the license intact in all copies or substantial portions of the software  
+• Release source code for any modifications you make if you distribute or run it as a network service  
+• Comply with the licensing terms of any third-party dependencies used in this project  
+
+You cannot:
+
+• Make proprietary or closed-source derivatives without also releasing the modified source code  
+• Remove copyright or license notices  
+
+This project makes use of [Shap-E](https://github.com/openai/shap-e), an OpenAI project, which is released under the MIT License.  
+All usage of Shap-E within this project must follow the guidelines and licensing terms provided by OpenAI.  
+
+For the full license text, see the `LICENSE` file in this repository.
+
+
 
 
 
@@ -109,48 +280,4 @@ tesseract/
 A modular ML pipeline that uses diffusion driven neural nets, to generate usable 3D Mesh assets from text or image inputs.
  mini research-to-production pipeline
 
- (tesseract) PS C:\Users\Aditya Pratap Singh\OneDrive\Desktop\Codes\tesseract_project> python cli.py --help
-usage: cli.py [-h] (-p PROMPT | -b BATCH_FILE) [-o OUTPUT_DIR]
-              [-f {ply,obj,glb} [{ply,obj,glb} ...]] [-n BASE_FILE] [--dry-run]
-              [-r] [-bs BATCH_SIZE] [-gs GUIDANCE_SCALE] [--progress]
-              [--clip-denoised] [--use-fp16] [--use-karras]
-              [--karras-steps KARRAS_STEPS] [--sigma-max SIGMA_MAX]
-              [--sigma-min SIGMA_MIN] [--s-churn S_CHURN] [--use-cuda]
-              [--fallback-to-cpu]
-
-TesseractV1 - Text-to-3D generation using Shap-E
-
-options:
-  -h, --help            show this help message and exit
-  -p PROMPT, --prompt PROMPT
-                        Single prompt to generate a 3D mesh
-  -b BATCH_FILE, --batch_file BATCH_FILE
-                        Path to a text file with one prompt per line
-  -o OUTPUT_DIR, --output_dir OUTPUT_DIR
-                        Directory to save generated files (default :
-                        tesseract/outputs)
-  -f {ply,obj,glb} [{ply,obj,glb} ...], --formats {ply,obj,glb} [{ply,obj,glb} ...]
-                        Mesh formats to export (default : ply)
-  -n BASE_FILE, --base_file BASE_FILE
-                        Base name for output files (default : generated_mesh)
-  --dry-run             Run pipeline without generating or saving any files (for
-                        testing)
-  -r, --resume-latents  If set, tries to resume from existing cached latents before
-                        generating new one
-  -bs BATCH_SIZE, --batch-size BATCH_SIZE
-                        Batch size for latent generation (default: 1)
-  -gs GUIDANCE_SCALE, --guidance-scale GUIDANCE_SCALE
-                        Guidance scale for diffusion (default: 12.0)
-  --progress            Show progress bar (default: True)
-  --clip-denoised       Clip denoised samples during generation (default: True)
-  --use-fp16            Use FP16 for faster inference (default: True)
-  --use-karras          Use Karras noise schedule (default: True)
-  --karras-steps KARRAS_STEPS
-                        Number of Karras steps (default: 30)
-  --sigma-max SIGMA_MAX
-                        Maximum sigma for Karras schedule (default: 160.0)
-  --sigma-min SIGMA_MIN
-                        Minimum sigma for Karras schedule (default: 0.001)
-  --s-churn S_CHURN     Sigma churn parameter (default: 0.0)
-  --use-cuda            Force CUDA usage if available (default: True)
-  --fallback-to-cpu     Fallback to CPU if CUDA is unavailable (default: True)
+ 
