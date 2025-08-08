@@ -1,33 +1,67 @@
 # Tesseract V1
 
-A 3D generation toolkit that transforms text prompts into editable mesh formats
+Generate 3D meshes from text prompts through a REST API or CLI with asynchronous job management and flexible output formats.
 
-## Overview and Introduction
+## Overview
 
-Tesseract V1 exists to make the process of creating 3D meshes from scratch faster and more accessible. While most artists and developers spend significant time starting from a blank canvas, Tesseract lets you describe what you need in words and produces a starting 3D mesh in multiple formats. This approach is ideal when you want a rough base that you can refine instead of modeling from zero
+Tesseract V1 exists to make the process of generating 3D meshes from text prompts accessible and scriptable. It wraps around an underlying 3D generation pipeline, exposes it through a production-ready FastAPI backend, and also provides a command-line interface for batch and local workflows.
 
-The system is built on top of the shap-e model and integrates it with a production-grade FastAPI backend and a feature-rich CLI. It supports async background jobs, multiple mesh formats, and status polling for efficient workflows
+The motivation behind Tesseract is to speed up early-stage 3D asset creation. While the generated meshes are not final production assets, they serve as useful starting points or "canvases" that can be refined further in professional 3D tools. This removes the need to begin modeling completely from scratch and allows more focus on creative iteration.
 
-Key features include
-- Text prompt to mesh generation with configurable parameters
-- Export to PLY OBJ and GLB formats
-- REST API with status polling
-- CLI support with extensive flags and configuration options
-- Async job handling and background task management
-- Configurable output structure for API and CLI generated files
+Key features include:
 
-Note  
-Due to the limited and not very high quality training data of the underlying shap-e model the outputs of Tesseract are not perfect. These meshes are best used as base canvases for further refinement in your preferred 3D software. This still offers a significant edge over starting from scratch. For better chances of achieving a desirable starting point consider increasing the batch size to generate more outputs and adjusting configuration parameters as explained in later sections
+* Support for multiple mesh formats such as OBJ, PLY, and GLB
+* REST API with asynchronous job management and status polling
+* Command-line interface with extensive flag support
+* Configurable output directories and generation parameters
+* Logging for both API and pipeline processes
+* Ready to run in both development and production environments
+
+Under the hood, Tesseract uses a modified pipeline built on the <b>Shape-E</b> model and FastAPI for its backend. Python’s async capabilities are leveraged for background task execution so that generation jobs do not block incoming requests.
 
 ## Features
 
-Tesseract V1 offers
-- 3D mesh generation from text prompts
-- Export to PLY OBJ and GLB formats
-- REST API with job submission and status polling
-- CLI interface with multiple flags and options
-- Async processing for long running generation jobs
-- Background task handling for scalable workflows
+Tesseract V1 can:
+* Generate 3D meshes directly from natural language prompts
+* Export meshes in OBJ, PLY, and GLB formats
+* Provide both REST API and CLI-based workflows
+* Allow asynchronous job creation with background task execution
+* Offer API endpoints to check job status and download generated files
+* Support extensive CLI flags for controlling batch size, formats, and other parameters
+* Save all outputs in organized output directories with clear file naming
+* Log both job-level and system-level activity for debugging and monitoring
+
+## Note 
+Due to the limited and not very high quality of training data for the underlying Shape-E model, outputs from Tesseract are not of final production quality. Instead, these meshes are best used as starting canvases for further refinement in modeling tools. This is an advantage over starting from a blank scene, as you immediately get a base structure to work with.  
+
+You can check the training samples for shap-e [here](!https://github.com/openai/shap-e/tree/main/samples)
+
+It is also recommended to increase the batch size to produce more outputs in a single run, increasing the chances of finding a desirable starting point. Further tweaking of configuration parameters can also improve the usefulness of outputs and will be explained in later sections.
+
+## Installation
+
+It is recommended to set up Tesseract in an isolated Python environment using either Conda or venv.
+
+### Using Conda:
+
+```
+conda create -n tesseract python==3.10 -y
+conda activate tesseract
+pip install -r requirements.txt -q 
+
+```
+
+### Using Python venv:
+
+```
+python -m venv tesseract_env
+source tesseract_env/bin/activate   # On Linux or macOS
+tesseract_env\Scripts\activate      # On Windows
+pip install -r requirements.txt
+
+```
+- Ensure that you have Python 3.10 installed as this is the recommended version for compatibility with all dependencies.
+
 
 ## Project Structure
 
