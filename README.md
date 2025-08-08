@@ -1,3 +1,76 @@
+# Tesseract V1
+
+A 3D generation toolkit that transforms text prompts into editable mesh formats
+
+## Overview and Introduction
+
+Tesseract V1 exists to make the process of creating 3D meshes from scratch faster and more accessible. While most artists and developers spend significant time starting from a blank canvas, Tesseract lets you describe what you need in words and produces a starting 3D mesh in multiple formats. This approach is ideal when you want a rough base that you can refine instead of modeling from zero
+
+The system is built on top of the shap-e model and integrates it with a production-grade FastAPI backend and a feature-rich CLI. It supports async background jobs, multiple mesh formats, and status polling for efficient workflows
+
+Key features include
+- Text prompt to mesh generation with configurable parameters
+- Export to PLY OBJ and GLB formats
+- REST API with status polling
+- CLI support with extensive flags and configuration options
+- Async job handling and background task management
+- Configurable output structure for API and CLI generated files
+
+Note  
+Due to the limited and not very high quality training data of the underlying shap-e model the outputs of Tesseract are not perfect. These meshes are best used as base canvases for further refinement in your preferred 3D software. This still offers a significant edge over starting from scratch. For better chances of achieving a desirable starting point consider increasing the batch size to generate more outputs and adjusting configuration parameters as explained in later sections
+
+## Features
+
+Tesseract V1 offers
+- 3D mesh generation from text prompts
+- Export to PLY OBJ and GLB formats
+- REST API with job submission and status polling
+- CLI interface with multiple flags and options
+- Async processing for long running generation jobs
+- Background task handling for scalable workflows
+
+## Project Structure
+
+```
+tesseract/
+├── api/
+│   ├── __init__.py
+│   ├── api.py                # API implementation
+│   └── schemas.py            # Pydantic API request/response schemas
+├── tesseract/
+│   ├── config/               # Configuration files and settings
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── generator.py      # Core generation logic
+│   │   ├── mesh_util.py      # Mesh processing utilities
+│   │   ├── model_loader.py   # Model loading and management
+│   │   └── render_core.py    # Core rendering functionality
+│   ├── loggers/              # Logging configuration and utilities
+│   ├── api_outputs/          # API-generated output files
+│   └── outputs/              # CLI generated output files
+├── logs/                     # Application logs (gitignored)
+├── notebooks/                # Jupyter Notebook samples for using project in Colab or similar
+├── app.py                    # API entry point (FastAPI)
+├── cli.py                    # CLI entry point
+├── main.py                   # Main application logic
+├── render.py                 # Rendering script (under development)
+├── requirements.txt          # Python dependencies
+├── README.md                 # Project documentation
+├── shape_e_core.svg          # Shape-E core diagram
+└── LICENCE                   # Project license
+```
+
+
+
+
+
+
+
+
+
+
+
+
 # tesseract
 A modular ML pipeline that uses diffusion driven neural nets, to generate usable 3D Mesh assets from text or image inputs.
  mini research-to-production pipeline
