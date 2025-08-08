@@ -34,7 +34,7 @@ Tesseract V1 can:
 ## Note 
 Due to the limited and not very high quality of training data for the underlying Shape-E model, outputs from Tesseract are not of final production quality. Instead, these meshes are best used as starting canvases for further refinement in modeling tools. This is an advantage over starting from a blank scene, as you immediately get a base structure to work with.  
 
-You can check the training samples for shap-e [here](!https://github.com/openai/shap-e/tree/main/samples)
+You can check the training samples for shap-e [here](https://github.com/openai/shap-e/tree/main/samples)
 
 It is also recommended to increase the batch size to produce more outputs in a single run, increasing the chances of finding a desirable starting point. Further tweaking of configuration parameters can also improve the usefulness of outputs and will be explained in later sections.
 
