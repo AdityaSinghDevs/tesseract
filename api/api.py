@@ -41,10 +41,11 @@ def process_generation_job(job_id: str, request: GenerateRequests):
             base_file=request.base_file,
             guidance_scale=request.guidance_scale,
             karras_steps=request.karras_steps,
-            output_dir="tesseract/tesseract/outputs",
+            output_dir="tesseract/api_outputs",
             formats = request.formats,
             preloaded_pipeline=PIPELINE,
-            resume_latents = request.resume_latents
+            resume_latents = request.resume_latents,
+            batch_size=request.batch_size
             
         )
 
