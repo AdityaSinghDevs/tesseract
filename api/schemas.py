@@ -3,6 +3,8 @@ from typing import List, Optional
 
 class GenerateRequests(BaseModel):
     prompt : str = Field(..., description = "Text prompt to generate a 3D model", max_length = 100)
+
+    batch_size : int = Field(..., description = "Nummber of outputs to be generated")
     
     base_file : Optional[str] = Field("generated_mesh", description = "Base Filename for output meshes")
 

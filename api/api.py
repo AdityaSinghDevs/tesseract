@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, BackgroundTasks, APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
-from ..api.schemas import GenerateRequests, GenerateResponse, ErrorResponse
+from api.schemas import GenerateRequests, GenerateResponse, ErrorResponse
 from main import generate_from_prompt, initialize_pipeline, BASE_FILE, OUTPUT_DIR
 from tesseract.loggers.logger import get_logger
 
