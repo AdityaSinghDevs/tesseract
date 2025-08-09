@@ -1,6 +1,40 @@
 # Tesseract V1
 
-Generate 3D meshes from text prompts through a REST API or CLI with asynchronous job management and flexible output formats.
+Generate 3D meshes from text prompts through a REST API or CLI with asynchronous job management and flexible output formats.<br>
+A production-grade, modular ML pipeline that uses diffusion-driven neural nets to generate 3D mesh assets from text or image inputs, built with scalability, reliability, and deployment in mind.<br><br>
+_A Mini research-to-production pipeline_
+
+## Table of Contents
+
+## Table of Contents
+
+1. [Overview](#overview)  
+2. [Features](#features)  
+3. [Note on Output Quality](#note)  
+4. [Installation](#installation)  
+   - [Using Conda](#using-conda)  
+   - [Using Python venv](#using-python-venv)  
+   - [Deployment](#deployment)  
+5. [Project Structure](#project-structure)  
+6. [Usage](#usage)  
+   - [Running the API](#running-the-api)  
+     - [Local Development](#local-development)  
+   - [Running via CLI](#running-via-cli)  
+     - [Quick Examples](#quick-examples)  
+     - [Key CLI Parameters](#key-cli-parameters)  
+7. [API Examples](#api-examples)  
+   - [API Documentation](#api-documentation)
+8. [Configuration](#configuration)  
+   - [Configuration Parameters Explained](#configuration-parameters-explained)  
+     - [General Settings](#general-settings)  
+     - [Device Settings](#device-settings)  
+     - [Latent Generation Parameters](#latent-generation-parameters)  
+     - [File Management](#file-management)  
+     - [Rendering Options (Experimental)](#rendering-options-experimental)  
+   - [Performance Tuning Tips](#performance-tuning-tips)  
+9. [License](#license)
+
+
 
 ## Overview
 
@@ -8,31 +42,42 @@ Tesseract V1 exists to make the process of generating 3D meshes from text prompt
 
 The motivation behind Tesseract is to speed up early-stage 3D asset creation. While the generated meshes are not final production assets, they serve as useful starting points or "canvases" that can be refined further in professional 3D tools. This removes the need to begin modeling completely from scratch and allows more focus on creative iteration.
 
-Key features include:
+**Production-Grade Design Highlights**
+- **Scalable API layer** with asynchronous job management to handle concurrent requests without blocking.
+- **Modular architecture** separating core model logic, API, rendering, and configuration.
+- **Config-driven execution** via YAML, enabling reproducible runs and easy tuning.
+- **Structured logging** for both API and model pipelines to aid monitoring and debugging.
+- **Device-aware execution** with automatic GPU/CPU fallback.
+- **Multiple interface options**: REST API for integration, CLI for scripting/batch jobs.
+- **Stateless API** — scalable horizontally behind a load balancer  
+- Minimal external dependencies for easier deployment  
 
-* Support for multiple mesh formats such as OBJ, PLY, and GLB
-* REST API with asynchronous job management and status polling
-* Command-line interface with extensive flag support
-* Configurable output directories and generation parameters
-* Logging for both API and pipeline processes
-* Ready to run in both development and production environments
-
-Under the hood, Tesseract uses a modified pipeline built on the <b>Shape-E</b> model and FastAPI for its backend. Python’s async capabilities are leveraged for background task execution so that generation jobs do not block incoming requests.
 
 ## Features
 
-Tesseract V1 can:
+### Built for Production Tesseract V1 can:
 * Generate 3D meshes directly from natural language prompts
-* Export meshes in OBJ, PLY, and GLB formats
-* Provide both REST API and CLI-based workflows
-* Allow asynchronous job creation with background task execution
+- Export in multiple formats: **OBJ**, **PLY**, and **GLB**  
+- Provide both **REST API** and **CLI** workflows  
+- Support **asynchronous job creation** with background task execution  
 * Offer API endpoints to check job status and download generated files
 * Support extensive CLI flags for controlling batch size, formats, and other parameters
 * Save all outputs in organized output directories with clear file naming
-* Log both job-level and system-level activity for debugging and monitoring
+- Logging for both API and pipeline processes for monitoring and debugging 
+
+- Handles **parallel job execution** without blocking other requests.
+- Fully **stateless API design**—can be scaled horizontally behind a load balancer.
+- Output **directory isolation per job** to prevent conflicts.
+- Minimal external dependencies to reduce deployment friction.
+
+
 
 ## Note 
-Due to the limited and not very high quality of training data for the underlying Shape-E model, outputs from Tesseract are not of final production quality. Instead, these meshes are best used as starting canvases for further refinement in modeling tools. This is an advantage over starting from a blank scene, as you immediately get a base structure to work with.  
+Due to the limited and not very high quality of training data for the underlying Shape-E model, outputs from Tesseract are not of final production quality. Instead, these meshes are best used as starting canvases for further refinement in modeling tools. This is an advantage over starting from a blank scene, as you immediately get a base structure to work with.  <br>
+
+While Tesseract’s architecture is production-ready, final deployment performance depends on
+the underlying model hardware, tuning, and integration with your environment.
+
 
 You can check the training samples for shap-e [here](https://github.com/openai/shap-e/tree/main/samples)
 
@@ -44,7 +89,7 @@ It is recommended to set up Tesseract in an isolated Python environment using ei
 
 ### Using Conda:
 
-```
+```bash
 conda create -n tesseract python==3.10 -y
 conda activate tesseract
 pip install -r requirements.txt -q 
@@ -53,7 +98,7 @@ pip install -r requirements.txt -q
 
 ### Using Python venv:
 
-```
+```bash
 python -m venv tesseract_env
 source tesseract_env/bin/activate   # On Linux or macOS
 tesseract_env\Scripts\activate      # On Windows
@@ -61,6 +106,12 @@ pip install -r requirements.txt
 
 ```
 - Ensure that you have Python 3.10 installed as this is the recommended version for compatibility with all dependencies.
+
+### Deployment
+Tesseract is designed for easy deployment in both development and production environments.
+- **Docker-ready** (coming soon) for reproducible builds.
+- Supports **GPU acceleration in cloud platforms** (AWS, GCP, Azure) and on-prem.
+- Compatible with **Kubernetes scaling patterns** for serving multiple generation jobs in parallel.
 
 
 ## Project Structure
@@ -90,7 +141,7 @@ tesseract/
 ├── render.py                 # Rendering script (under development)
 ├── requirements.txt          # Python dependencies
 ├── README.md                 # Project documentation
-├── shape_e_core.svg          # Shape-E core diagram
+├── shape_e_structure.svg          # Shape-E core diagram
 └── LICENCE                   # Project license
 ```
 
@@ -263,21 +314,3 @@ This project makes use of [Shap-E](https://github.com/openai/shap-e), an OpenAI 
 All usage of Shap-E within this project must follow the guidelines and licensing terms provided by OpenAI.  
 
 For the full license text, see the `LICENSE` file in this repository.
-
-
-
-
-
-
-
-
-
-
-
-
-
-# tesseract
-A modular ML pipeline that uses diffusion driven neural nets, to generate usable 3D Mesh assets from text or image inputs.
- mini research-to-production pipeline
-
- 
