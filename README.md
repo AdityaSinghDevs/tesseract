@@ -6,8 +6,6 @@ _A Mini research-to-production pipeline_
 
 ## Table of Contents
 
-## Table of Contents
-
 1. [Overview](#overview)  
 2. [Features](#features)  
 3. [Note on Output Quality](#note)  
@@ -251,7 +249,7 @@ You can refer to `defaults.yaml` file for understanding detailed effects of each
 - **`model`**: Underlying model family (`shap-e`)
 - **`base_model`**: Text-conditioned model variant (`text300M`)
 - **`transmitter`**: Renderer model identifier
-- **`seed`**: Random seed for reproducible results
+<!-- - **`seed`**: Random seed for reproducible results -->
 
 #### Device Settings
 - **`use_cuda`**: Enable CUDA acceleration when available

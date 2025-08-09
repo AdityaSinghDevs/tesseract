@@ -1,0 +1,27 @@
+GNU Affero General Public License v3.0
+Copyright (c) 2025 [Your Name or Organization]
+
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+
+You are free to
+Use, modify, and distribute this software for personal, academic, or commercial purposes.
+
+Clone it for research, testing, or improvement.
+
+Run it locally or in production environments.
+
+You must
+Keep this license text intact in all copies or substantial portions of the software.
+
+Release the complete source code for any modifications you make if you distribute the software or run it as a network-accessible service.
+
+Comply with the licensing terms of any third-party dependencies used in this project.
+
+You cannot
+Make proprietary or closed-source derivatives without also releasing the modified source code under AGPL-3.0.
+
+Remove copyright or license notices.
+
+Full License Text
+For the complete legal terms, please see the included file:
+[LICENSE-AGPL-3.0.txt](https://www.gnu.org/licenses/agpl-3.0.txt)

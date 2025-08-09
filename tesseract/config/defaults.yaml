@@ -3,7 +3,7 @@ general:
   model: "shap-e"
   base_model : "text300M"
   transmitter : "transmitter"
-  seed: 42
+  seed: 42 #for future additions
 
 device:
   use_cuda: true
@@ -21,7 +21,7 @@ latents:
   clip_denoised: true  # Prevents over-saturation/artifacts by clamping values to valid range
   progress: true  # Displays a live progress bar during generation (useful in CLI or notebooks)
   sigma_min: 1e-3  # Minimum noise level during diffusion (too low can cause oversharpening)
-  sigma_max: 160  # Maximum noise level (higher = more noise, but more generative diversity)
+  sigma_max: 140  # Maximum noise level (higher = more noise, but more generative diversity)
   s_churn: 0.0  # Adds stochasticity during sampling (non-zero = more variety, but possibly less stable)
 
 # Notes:

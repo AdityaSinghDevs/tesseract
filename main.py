@@ -77,7 +77,7 @@ def generate_from_prompt(prompt:str, base_file :BASE_FILE,
         text_encoder_model = pipeline["text_encoder_model"]
         transmitter_model = pipeline["transmitter"]
         diffusion_process = pipeline["diffusion_process"]
-        device = pipeline["device"]
+        # device = pipeline["device"] Ain't using this rn 
 
         latents = get_or_generate_latents(
             prompt=prompt,

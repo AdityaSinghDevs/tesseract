@@ -1,23 +1,33 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from typing import List, Optional
 
 class GenerateRequests(BaseModel):
     prompt : str = Field(..., description = "Text prompt to generate a 3D model", max_length = 100)
 
-    batch_size : int = Field(..., description = "Nummber of outputs to be generated")
+    batch_size : int = Field(3, description = "Nummber of outputs to be generated")
     
     base_file : Optional[str] = Field("generated_mesh", description = "Base Filename for output meshes")
 
-    guidance_scale : Optional[int] = Field(12 , description = "Guidance scale for results")
+    guidance_scale : Optional[float] = Field(12 , description = "Guidance scale for results")
 
-    karras_steps : Optional[int] = Field(30, description= "Number of steps taken for generation")
+    karras_steps : Optional[float] = Field(30, description= "Number of steps taken for generation")
 
-    formats: List[str] = Field(default_factory = lambda: ["ply"] , description = "Mesh formats to export")
+    formats: Optional[List[str]] = Field(default_factory=lambda: ["ply"], description="Mesh formats to export")
 
     resume_latents : bool = Field(False, description = "Resume from cached latents if available")
 
     render_latents : bool = Field(False, description = "Render latents for direct preview")
 
+@field_validator("formats", mode="before")
+def ensure_list_and_default(cls, v):
+        # If missing or empty, set default
+        if not v:
+            return ["ply"]
+        # If single string, wrap into a list
+        if isinstance(v, str):
+            return [v]
+        # Otherwise, return as-is
+        return v
 
 
 
