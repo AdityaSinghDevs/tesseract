@@ -16,6 +16,13 @@ logger = get_logger(__name__, log_file='app.log')
 
 
 def parse_args():
+    '''
+    Parse and return CLI arguments for the generation pipeline.
+
+    Returns:
+        argparse.Namespace: Parsed command-line arguments including prompt, output settings,
+        generation parameters, and performance/configuration flags.
+    '''
     parser = argparse.ArgumentParser(
         description="TesseractV1 - Text-to-3D generation using Shap-E"
     )
@@ -153,6 +160,13 @@ def parse_args():
 
 
 def main():
+
+    '''
+    Entry point for CLI execution.
+
+    Handles argument parsing, input validation, and dispatching to single-prompt
+    or batch generation modes, with optional dry-run support.
+    '''
     args = parse_args()
     logger.info("CLI execution started")
 

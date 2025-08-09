@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, BackgroundTasks, APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
-from api.schemas import GenerateRequests, GenerateResponse, ErrorResponse
+from api.schemas import GenerateRequests, GenerateResponse
 from main import generate_from_prompt, initialize_pipeline, BASE_FILE, OUTPUT_DIR
 from tesseract.loggers.logger import get_logger
 
@@ -21,6 +21,11 @@ JOBS: Dict[str, Dict] = {}
 
 @asynccontextmanager
 async def lifespan(app):
+    '''
+    Initialize and manage the FastAPI application lifecycle.
+
+    Loads the global pipeline at startup and performs cleanup on shutdown.
+    '''
     global PIPELINE
     try:
         logger.info("Startinng up FastAPI app and initializing pipeline...")
@@ -31,6 +36,11 @@ async def lifespan(app):
         logger.info("Shutting down FastAPI app. Cleanup if needed.")
 
 def process_generation_job(job_id: str, request: GenerateRequests):
+    '''
+    Execute a generation job for a given prompt and store results.
+
+    Updates the global JOBS registry with status, results, or errors.
+    '''
     JOBS[job_id]["status"] = "running"
 
     try:
@@ -71,6 +81,11 @@ def process_generation_job(job_id: str, request: GenerateRequests):
 @router.post("/generate")
 async def generate_endpoint(request: GenerateRequests,
                             background_tasks : BackgroundTasks):
+    '''
+    Queue a generation job for asynchronous processing.
+
+    Returns a job ID for status polling via the /status endpoint.
+    '''
     job_id = str(uuid.uuid4())
     JOBS[job_id] = {"status": "pending", "result":None, "error":None}
 
@@ -85,6 +100,11 @@ async def generate_endpoint(request: GenerateRequests,
 
 @router.get("/status/{job_id}")
 async def check_status(job_id: str):
+    '''
+    Retrieve the current status of a generation job.
+
+    Returns job state and progress; raises 404 if job is unknown.
+    '''
     job = JOBS.get(job_id)
     if not job:
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
@@ -93,6 +113,11 @@ async def check_status(job_id: str):
 
 @router.get("/download/{job_id}")
 async def download_files(job_id:str):
+    '''
+     Package and return generated mesh files as a ZIP archive.
+
+    Raises an error if the job is incomplete or no files are available.
+    '''
     job = JOBS.get(job_id)
     if not job:
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")

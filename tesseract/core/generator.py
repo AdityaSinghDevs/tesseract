@@ -22,6 +22,23 @@ logger = get_logger(__name__, log_file='app.log')
 
 def validate_inputs(prompt : str, model : Any ,
                      diffusion : Any)->None :
+    
+    '''
+        
+    Validate core inputs for latent generation.
+
+    Ensures that the text prompt is a non-empty string, and that both 
+    the model and diffusion process are provided.
+
+    Args:
+        prompt (str): Text description for generation.
+        model (Any): Text-to-latent model instance.
+        diffusion (Any): Diffusion process instance.
+
+    Raises:
+        ValueError: If any input is missing or invalid.
+    
+    '''
     if not isinstance(prompt,str) or not prompt.strip():
         logger.error("Empty or Invalid Prompt given")
         raise ValueError("The Prompt should be a str and not empty")
@@ -45,6 +62,34 @@ karras_steps : int = KARRAS_STEPS,
 sigma_max : float = SIGMA_MAX,
 sigma_min : float = SIGMA_MIN,
 s_churn : float = S_CHURN)-> Any:
+    
+    '''
+    Generate latents from a text prompt using the given model and diffusion process.
+
+    Runs the configured sampling procedure to produce latent representations 
+    for downstream decoding.
+
+    Args:
+        prompt (str): Text description for generation.
+        model (Any): Text-to-latent model instance.
+        diffusion (Any): Diffusion process instance.
+        batch_size (int): Number of latents to generate.
+        guidance_scale (float): Classifier-free guidance strength.
+        progress (bool): Display progress bar during sampling.
+        clip_denoised (bool): Clip denoised samples to valid range.
+        use_fp16 (bool): Enable half-precision computation.
+        use_karras (bool): Use Karras noise schedule.
+        karras_steps (int): Steps for Karras sampling.
+        sigma_max (float): Maximum noise level.
+        sigma_min (float): Minimum noise level.
+        s_churn (float): Churn parameter for noise schedule.
+
+    Returns:
+        Any: Generated latent representations.
+
+    Raises:
+        Exception: If latent generation fails.
+    '''
     
     validate_inputs(prompt, model, diffusion)
     logger.info(f"Inputs Verified, Starting latent generation from prompt : '{prompt}'")
@@ -88,6 +133,34 @@ def get_or_generate_latents(prompt: str,
                             sigma_min : float = SIGMA_MIN,
                             s_churn : float = S_CHURN,
                             resume:bool = False)->Any:
+    
+    '''
+    Load cached latents if available, otherwise generate and save new ones.
+
+    When `resume` is True and a cached latent file exists, loads it directly.
+    Otherwise, generates new latents and stores them for future use.
+
+    Args:
+        prompt (str): Text description for generation.
+        model (Any): Text-to-latent model instance.
+        diffusion (Any): Diffusion process instance.
+        base_file (str): Base filename for saving latents.
+        output_dir (str): Output directory for cached latents.
+        batch_size (int): Number of latents to generate.
+        guidance_scale (float): Classifier-free guidance strength.
+        progress (bool): Display progress bar during sampling.
+        clip_denoised (bool): Clip denoised samples to valid range.
+        use_fp16 (bool): Enable half-precision computation.
+        use_karras (bool): Use Karras noise schedule.
+        karras_steps (int): Steps for Karras sampling.
+        sigma_max (float): Maximum noise level.
+        sigma_min (float): Minimum noise level.
+        s_churn (float): Churn parameter for noise schedule.
+        resume (bool): Whether to resume from existing cached latents.
+
+    Returns:
+        Any: Generated or loaded latent representations.
+    '''
     
     latents_dir = os.path.join(output_dir, "latents")
     os.makedirs(latents_dir, exist_ok=True)

@@ -24,6 +24,23 @@ def initialize_pipeline(
          base_model :str = BASE_MODEL, transmitter: str = TRANSMITTER,
 diffusion_config : str = DIFFUSION_CONFIG
 ) -> Dict[str, Any]:
+    '''
+    Initialize and load all models required for the Tesseract generation pipeline.
+
+    Args:
+        use_cuda (bool): Whether to use CUDA if available.
+        fallback_to_cpu (bool): Fallback to CPU if CUDA is unavailable.
+        base_model (str): Name of the base text encoder model.
+        transmitter (str): Name of the transmitter model for decoding latents.
+        diffusion_config (str): Path to diffusion process configuration.
+
+    Returns:
+        Dict[str, Any]: Dictionary containing loaded models and device info.
+
+    Raises:
+        RuntimeError: If pipeline initialization fails.
+    '''
+    
 
     logger.info("Initializing Tesseract pipeline")
 
@@ -63,6 +80,36 @@ def generate_from_prompt(prompt:str, base_file :BASE_FILE,
                             sigma_min : float = SIGMA_MIN,
                             s_churn : float = S_CHURN,
                             fallback_to_cpu : bool = FALLBACK_TO_CPU,) ->Dict[str, Any]:
+    
+    '''
+    Generate 3D mesh(es) from a text prompt using the Tesseract pipeline.
+
+    Args:
+        prompt (str): Text description for generation.
+        base_file (str): Base filename prefix for saved outputs.
+        output_dir (str): Directory to save generated outputs.
+        formats (list): Output mesh formats (e.g., ["ply", "obj"]).
+        preloaded_pipeline (dict, optional): Preloaded pipeline components.
+        resume_latents (bool): Resume from previously saved latents if available.
+        batch_size (int): Latent generation batch size.
+        guidance_scale (float): Guidance scale for generation.
+        progress (bool): Show progress during generation.
+        clip_denoised (bool): Whether to clip denoised outputs.
+        use_fp16 (bool): Use mixed-precision FP16 mode if supported.
+        use_cuda (bool): Use CUDA if available.
+        use_karras (bool): Use Karras noise schedule.
+        karras_steps (int): Number of Karras sampling steps.
+        sigma_max (float): Maximum noise sigma.
+        sigma_min (float): Minimum noise sigma.
+        s_churn (float): Sigma churn parameter for sampling.
+        fallback_to_cpu (bool): Fallback to CPU if CUDA unavailable.
+
+    Returns:
+        Dict[str, Any]: Metadata including saved file paths, counts, and latents path.
+
+    Raises:
+        RuntimeError: If generation fails.
+    '''
 
     logger.info(f"Starting generation..")
 
@@ -133,7 +180,34 @@ def batch_generate(prompts: List[str], output_dir:str, base_file : str, formats 
                             sigma_max : float = SIGMA_MAX,
                             sigma_min : float = SIGMA_MIN,
                             s_churn : float = S_CHURN,
-                            fallback_to_cpu : bool = FALLBACK_TO_CPU):
+                            fallback_to_cpu : bool = FALLBACK_TO_CPU)->List[Dict[str, Any]]:
+        
+        '''
+        Generate meshes for a batch of text prompts using the Tesseract pipeline.
+
+    Args:
+        prompts (List[str]): List of text prompts for generation.
+        output_dir (str): Directory to save generated outputs.
+        base_file (str): Base filename prefix for saved outputs.
+        formats (list): Output mesh formats.
+        preloaded_pipeline (dict, optional): Preloaded pipeline components.
+        resume_latents (bool): Resume from previously saved latents.
+        batch_size (int): Latent generation batch size.
+        guidance_scale (float): Guidance scale for generation.
+        progress (bool): Show progress during generation.
+        clip_denoised (bool): Whether to clip denoised outputs.
+        use_fp16 (bool): Use mixed-precision FP16 mode if supported.
+        use_cuda (bool): Use CUDA if available.
+        use_karras (bool): Use Karras noise schedule.
+        karras_steps (int): Number of Karras sampling steps.
+        sigma_max (float): Maximum noise sigma.
+        sigma_min (float): Minimum noise sigma.
+        s_churn (float): Sigma churn parameter for sampling.
+        fallback_to_cpu (bool): Fallback to CPU if CUDA unavailable.
+
+    Returns:
+        List[Dict[str, Any]]: List of generation results for each prompt.
+        '''
 
         logger.info(f"Batch generation started for : {len(prompts)}")
         all_results = []

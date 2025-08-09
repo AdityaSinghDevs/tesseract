@@ -42,7 +42,7 @@ class GenerateResponse(BaseModel):
     job_id: Optional[str] = None #for async stuff
 
 
-class ErrorResponse(BaseModel):
-    status: str = Field("error")
-    message : str
+# class ErrorResponse(BaseModel):
+#     status: str = Field("error")
+#     message : str
 

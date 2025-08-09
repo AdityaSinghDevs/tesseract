@@ -4,6 +4,15 @@ import yaml
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "defaults.yaml")
 
 def load_config(path=CONFIG_PATH):
+    """
+    Load YAML configuration file into a Python dictionary.
+
+    Args:
+        path (str): Path to the YAML config file.
+
+    Returns:
+        dict: Parsed configuration.
+    """
     with open(path, "r") as f:
         return yaml.safe_load(f)
 cfg = load_config()

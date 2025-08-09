@@ -12,6 +12,17 @@ logger = get_logger(__name__ , log_file="app.log")
 
 
 def validate_latents_inputs(model : Any , latents : Any)->None:
+
+   '''
+   Validate that a model and non-empty latents are provided for decoding.
+
+    Args:
+        model: Model instance used for decoding.
+        latents: Sequence of latent representations (Tensors, lists, or tuples).
+
+    Raises:
+        ValueError: If model is None, latents are empty, or any latent is invalid.
+   '''
    if model is None:
       logger.error("Model not provided")
       raise ValueError("Model not provided")
@@ -39,6 +50,17 @@ def validate_latents_inputs(model : Any , latents : Any)->None:
 
 def validate_decoded_mesh(mesh : List[Any] , output_dir : str,
                          formats : List[Any])->None:
+   '''
+    Validate decoded mesh data and export parameters.
+
+    Args:
+        mesh: List of decoded mesh objects.
+        output_dir: Path to save mesh files.
+        formats: List of output formats to export.
+
+    Raises:
+        ValueError: If mesh, output_dir, or formats are invalid.
+   '''
    if not isinstance(mesh, list) or len(mesh)==0:
       logger.error("Decoded mesh must be a non empty list")
       raise
@@ -50,6 +72,21 @@ def validate_decoded_mesh(mesh : List[Any] , output_dir : str,
       raise
    
 def convert_to_glb(mesh : Any, output_path :str) ->str:
+
+   '''
+   Convert a mesh object to GLB format and save it.
+
+    Args:
+        mesh: Mesh object with 'verts' and 'faces' attributes.
+        output_path: Destination file path for the GLB.
+
+    Returns:
+        str: Path to the saved GLB file.
+
+    Raises:
+        ValueError: If mesh is None or empty.
+        RuntimeError: If conversion or export fails.
+   '''
    
    if not mesh:
       logger.error("No mesh provided for GLB export.")
@@ -83,6 +120,19 @@ def convert_to_glb(mesh : Any, output_path :str) ->str:
    
 
 def decode_latents(model : Any, latents: Any)->List[Any]:
+    '''
+    Decode latent representations into mesh objects.
+
+    Args:
+        model: Model instance used for decoding.
+        latents: Sequence of latent tensors to decode.
+
+    Returns:
+        List[Any]: List of decoded mesh objects.
+
+    Raises:
+        RuntimeError: If all latents fail to decode.
+    '''
 
     output_meshes = []
    
@@ -113,6 +163,18 @@ def decode_latents(model : Any, latents: Any)->List[Any]:
 def save_mesh(meshes : List[Any] , base_file : str, 
               output_dir: str = OUTPUT_DIR,
               formats : List[Any] = DEFAULT_FORMATS)->Dict[str, Any]:
+   '''
+   Save meshes to disk in specified formats.
+
+    Args:
+        meshes: List of mesh objects to save.
+        base_file: Base filename for exports.
+        output_dir: Directory to store exported meshes.
+        formats: List of formats ('ply', 'obj', 'glb') to export.
+
+    Returns:
+        dict: Summary containing saved file paths, failed formats, count, and output directory.
+   '''
    
    files = []
    failed_formats = []
