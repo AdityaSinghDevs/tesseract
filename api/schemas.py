@@ -20,13 +20,13 @@ class GenerateRequests(BaseModel):
 
 @field_validator("formats", mode="before")
 def ensure_list_and_default(cls, v):
-        # If missing or empty, set default
+       
         if not v:
             return ["ply"]
-        # If single string, wrap into a list
+      
         if isinstance(v, str):
             return [v]
-        # Otherwise, return as-is
+       
         return v
 
 
