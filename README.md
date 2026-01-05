@@ -1,12 +1,13 @@
 # Tesseract - v1.0
 
-<div align="center">
-  <img src="docs/tesseract.gif" alt="Tesseract Logo" style="max-width: 300px; max-height: 200px;">
-</div>
-<div style="color: #888; font-style: italic;">
-  A sample generated mesh for the prompt "A shark" using Tesseract.
-</div>
-<br>
+<p align="center">
+  <img src="docs/tesseract.gif" alt="Tesseract Logo" width="300" />
+</p>
+
+<p align="center">
+  <em>A sample generated mesh for the prompt <strong>"A shark"</strong> using Tesseract.</em>
+</p>
+
 
 Generate 3D meshes from text prompts through a REST API or CLI with asynchronous job management and flexible output formats.<br>
 A production-grade, modular ML pipeline that uses diffusion-driven neural nets to generate 3D mesh assets from text or image inputs, built with scalability, reliability, and deployment in mind.<br><br>
