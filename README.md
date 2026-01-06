@@ -1,5 +1,10 @@
 # Tesseract - v1.0
 
+
+Generate 3D meshes from text prompts through a REST API or CLI with asynchronous job management and flexible output formats.<br>
+A production-grade, modular ML pipeline that uses diffusion-driven neural nets to generate 3D mesh assets from text or image inputs, built with scalability, reliability, and deployment in mind.<br><br>
+_A Mini research-to-production pipeline_
+
 <p align="center">
   <img src="docs/tesseract.gif" alt="Tesseract Logo" width="300" />
 </p>
@@ -7,11 +12,6 @@
 <p align="center">
   <em>A sample generated mesh for the prompt <strong>"A shark"</strong> using Tesseract.</em>
 </p>
-
-
-Generate 3D meshes from text prompts through a REST API or CLI with asynchronous job management and flexible output formats.<br>
-A production-grade, modular ML pipeline that uses diffusion-driven neural nets to generate 3D mesh assets from text or image inputs, built with scalability, reliability, and deployment in mind.<br><br>
-_A Mini research-to-production pipeline_
 
 ## Table of Contents
 
