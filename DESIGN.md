@@ -63,7 +63,6 @@ This approach enables reproducible inference, environment-specific tuning, and f
 The system supports automatic GPU usage when availaible, and a swift CPU fallback path to allow execution in heterogeneous environments.
 This graceful degradation to CPU allows for inference even on low compute machines and servers at the cost of latency while still keeping correctness of inference preserved as the core Model runtime stays the same
 
-
 The system automatically utilizes GPU acceleration when available and falls back to CPU execution otherwise. This allows Tesseract to run in heterogeneous environments without hard hardware requirements.
 
 CPU fallback preserves correctness of inference but introduces significantly higher latency compared to GPU execution. This trade-off is accepted to prioritize portability and graceful degradation.
