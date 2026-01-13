@@ -18,7 +18,7 @@ def load_prompt(prompt_path : Path)-> str:
    with open(prompt_path, "r", encoding='utf-8') as f:
       prompt = f.read()
 
-   return prompt.strip
+   return prompt.strip()
 
 def write_raw_results(output_path: Path, data: Dict[str, Any])->None:
    """

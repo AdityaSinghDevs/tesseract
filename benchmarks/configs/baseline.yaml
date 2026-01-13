@@ -6,6 +6,7 @@ runtime:
   device: ${DEVICE}
 
 output:
-  format: ply
+  formats: 
+    - ply
 
 precision: default

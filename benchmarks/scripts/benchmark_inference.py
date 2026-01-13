@@ -42,7 +42,7 @@ logger.info(f"Config = {CONFIG_VARIANT}, Device = {DEVICE}, Batch Size = {BATCH_
 """Loading fixed inputs"""
 resolved_config = load_benchmark_config(name = CONFIG_VARIANT, device=DEVICE, batch_size=BATCH_SIZE)
 
-prompt:str  = load_prompt(prompt_path=PROMPT_PATH)
+prompt = load_prompt(prompt_path=PROMPT_PATH)
 
 """Model Initialization"""
 
@@ -50,7 +50,7 @@ logger.info("Initializing device and loading models")
 
 device = get_device(use_cuda=(DEVICE =='gpu'), fallback_to_cpu=True)
 
-base_model, transmitter, diffusion_process = load_all_models(
+transmitter, base_model, diffusion_process = load_all_models(
     device=device,
     base_model=BASE_MODEL,
     transmitter=TRANSMITTER,
@@ -142,7 +142,7 @@ for run_index in range(NUM_RUNS):
         "run_index": run_index,
         "device": DEVICE,
         "batch_size": BATCH_SIZE,
-        "sampling_steps": resolved_config["inference"]["sample_steps"],
+        "sampling_steps": resolved_config["inference"]["sampling_steps"],
         "end_to_end_seconds": e2e,
         "inference_seconds": inf,
         "peak_gpu_memory_bytes": mem
