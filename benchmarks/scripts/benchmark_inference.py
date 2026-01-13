@@ -75,7 +75,7 @@ _gen = get_or_generate_latents(
             progress = PROGRESS, clip_denoised=CLIP_DENOISED,
             use_fp16=USE_FP16,
             use_karras=USE_KARRAS,
-            karras_steps=resolved_config["inference"]["sample_steps"],
+            karras_steps=resolved_config["inference"]["sampling_steps"],
             sigma_max=SIGMA_MAX,
             sigma_min=SIGMA_MIN,
             s_churn=S_CHURN
@@ -104,7 +104,7 @@ def run_inference()-> Any:
             progress = PROGRESS, clip_denoised=CLIP_DENOISED,
             use_fp16=USE_FP16,
             use_karras=USE_KARRAS,
-            karras_steps=resolved_config["inference"]["sample_steps"],
+            karras_steps=resolved_config["inference"]["sampling_steps"],
             sigma_max=SIGMA_MAX,
             sigma_min=SIGMA_MIN,
             s_churn=S_CHURN
