@@ -30,7 +30,7 @@ DEVICE = "gpu"
 BATCH_SIZE = 1
 NUM_RUNS = 3
 
-PROMPT_PATH = "benchmarks/prompts/simple.txt"
+PROMPT_PATH = Path("benchmarks/prompts/simple.txt")
 RESULTS_DIR = Path("benchmarks/results/raw/")
 
 logger = get_logger(__name__ , log_file="benchmark_inf.log" )
@@ -50,9 +50,13 @@ logger.info("Initializing device and loading models")
 
 device = get_device(use_cuda=(DEVICE =='gpu'), fallback_to_cpu=True)
 
-models: Dict[str, Any] = load_all_models(device=device, base_model = BASE_MODEL,
-                        transmitter=TRANSMITTER, diffusion_config=DIFFUSION_CONFIG
-                        )
+base_model, transmitter, diffusion_process = load_all_models(
+    device=device,
+    base_model=BASE_MODEL,
+    transmitter=TRANSMITTER,
+    diffusion_config=DIFFUSION_CONFIG,
+)
+
 
 logger.info("Model initialization complete")
 
@@ -62,8 +66,8 @@ logger.info ("Performing warm-up run (discarded)")
 
 _gen = get_or_generate_latents(
             prompt=prompt,
-            model=models["text_encoder_model"],
-            diffusion=models["diffusion_process"],
+            model=base_model,
+            diffusion=diffusion_process,
             base_file=BASE_FILE,
             output_dir=OUTPUT_DIR,
             resume=False,
@@ -76,7 +80,7 @@ _gen = get_or_generate_latents(
             sigma_min=SIGMA_MIN,
             s_churn=S_CHURN
         )
-meshes = decode_latents(model=models["transmitter"], latents=_gen)
+meshes = decode_latents(model=transmitter, latents=_gen)
 _ = save_mesh(meshes=meshes, base_file="discard", output_dir=OUTPUT_DIR, formats=resolved_config["output"]["formats"])
 
 
@@ -91,8 +95,8 @@ def run_inference()-> Any:
 
     latents = get_or_generate_latents(
             prompt=prompt,
-            model=models["text_encoder_model"],
-            diffusion=models["diffusion_process"],
+            model=base_model,
+            diffusion=diffusion_process,
             base_file=BASE_FILE,
             output_dir=OUTPUT_DIR,
             resume=False,
@@ -125,7 +129,7 @@ for run_index in range(NUM_RUNS):
             latents  = run_inference()
         inf = inference_time()
         
-        meshes = decode_latents(model=models["transmitter"], latents=latents)
+        meshes = decode_latents(model=transmitter, latents=latents)
         _ = save_mesh(meshes=meshes, base_file=f"run_{run_index}",
                               output_dir=OUTPUT_DIR, formats=resolved_config["output"]["formats"])
 

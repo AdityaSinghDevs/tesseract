@@ -17,7 +17,7 @@ def load_benchmark_config( name: str , device: str, batch_size: int)-> Dict:
     config_path = CONFIG_DIR / f"{name}.yaml"
 
     with open(config_path, "r") as f:
-        raw_cfg = yaml.safe_laod(f)
+        raw_cfg = yaml.safe_load(f)
 
     raw_cfg["runtime"]["device"] = device
     raw_cfg["inference"]["batch_size"] = batch_size
