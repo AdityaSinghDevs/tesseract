@@ -9,7 +9,7 @@ def now()-> float:
     return time.perf_counter()
 
 @contextmanager
-def meaure_time()-> Iterator[float]:
+def measure_time()-> Iterator[float]:
     """
     Context manager to measure elapsed wall-clock time for a code block.
     Usage:
