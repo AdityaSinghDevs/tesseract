@@ -239,3 +239,7 @@ checkpoints/
 # Local test artifacts
 tmp/
 temp/
+
+#Notes
+docs/benchmarknotes.txt
+docs/notes.txt

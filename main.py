@@ -8,10 +8,10 @@ from tesseract.config.config import ( USE_CUDA,FALLBACK_TO_CPU,BASE_MODEL,
                                     DEFAULT_FORMATS, BASE_FILE, LATENT_BATCH_SIZE,
                                     GUIDANCE_SCALE, USE_FP16, USE_KARRAS, 
                                     KARRAS_STEPS, CLIP_DENOISED,PROGRESS,
-                                    SIGMA_MIN, SIGMA_MAX, S_CHURN,RENDER_MODE,RENDER_SIZE)
+                                    SIGMA_MIN, SIGMA_MAX, S_CHURN)
 from tesseract.loggers.logger import get_logger
 from tesseract.core.model_loader import get_device, load_all_models
-from tesseract.core.generator import get_or_generate_latents, generate_latents
+from tesseract.core.generator import get_or_generate_latents
 from tesseract.core.mesh_util import decode_latents, save_mesh
 # from tesseract.core.render_core import render_image
 
