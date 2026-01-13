@@ -1,0 +1,12 @@
+#Hugh cost configurations
+runtime:
+  device: ${DEVICE}     
+
+inference:
+  sampling_steps: 64  
+  batch_size: ${BATCH}  
+
+output:
+  format: ply
+
+precision: default 
