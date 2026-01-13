@@ -23,7 +23,7 @@ The primary goals are:
 | Inference vs Overhead| End-to-end latency, inference-only latency | Separates model execution time from system-level overhead, indicating whether optimization efforts should target the model runtime or surrounding infrastructure. |
 | CPU vs GPU gap | End-to-end latency per device | Quantifies cost of CPU fallback under identical configurations. |
 | Batch and selected configuration scaling | Latency and throughput | Characterizes the trade-off between per-request latency and aggregate throughput as batch size and selected configuration parameters vary. |
-| Memory pressure | Peak GPU memory | Identifies memory bottlenecks and OOM risk|
+| Memory pressure | Peak GPU memory | Identifies memory bottlenecks and OOM risk, GPU memory metrics are collected only for GPU runs, for CPU runs, this field is recorded as null.|
 
 ## Test Matrix
 

@@ -26,7 +26,7 @@ from tesseract.loggers.logger import get_logger
 BENCHMARK_NAME = "inference_latency"
 CONFIG_VARIANT = "baseline"
 
-DEVICE = "gpu"
+DEVICE = "gpu" #CHANGE THIS FOR CPU RUN
 BATCH_SIZE = 1
 NUM_RUNS = 3
 
@@ -38,6 +38,9 @@ logger = get_logger(__name__ , log_file="benchmark_inf.log" )
 logger.info("Starting inference latency benchmark")
 logger.info(f"Config = {CONFIG_VARIANT}, Device = {DEVICE}, Batch Size = {BATCH_SIZE} , Runs = {NUM_RUNS}")
 
+logger.info(
+    f"Run configuration | Device={DEVICE} | FP16={USE_FP16}"
+)
 
 """Loading fixed inputs"""
 resolved_config = load_benchmark_config(name = CONFIG_VARIANT, device=DEVICE, batch_size=BATCH_SIZE)
@@ -48,7 +51,7 @@ prompt = load_prompt(prompt_path=PROMPT_PATH)
 
 logger.info("Initializing device and loading models")
 
-device = get_device(use_cuda=(DEVICE =='gpu'), fallback_to_cpu=True)
+device = get_device(use_cuda=(DEVICE =='gpu'), fallback_to_cpu=True) # CHANGE THIS TO use_cuda=False FOR CPU RUNS
 
 transmitter, base_model, diffusion_process = load_all_models(
     device=device,
@@ -120,7 +123,7 @@ for run_index in range(NUM_RUNS):
     # Inference-only latency is defined as *latent generation only*.
     # Post-processing and serialization are excluded from inference timing.
 
-    if torch.cuda.is_available():
+    if DEVICE != "cpu" and torch.cuda.is_available():
             torch.cuda.reset_peak_memory_stats()
 
     with measure_time() as end_to_end:
@@ -135,7 +138,11 @@ for run_index in range(NUM_RUNS):
 
 
     e2e = end_to_end()
-    mem = measure_peak_gpu_memory()  
+
+    if DEVICE != "cpu" and torch.cuda.is_available():
+         mem = measure_peak_gpu_memory()
+    else:
+         mem = None
 
     run_record = {
         "benchmark":BENCHMARK_NAME,
