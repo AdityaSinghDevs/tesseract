@@ -4,9 +4,10 @@
     "run_index": 0,
     "device": "gpu",
     "batch_size": 1,
+    "prompt": "medium",
     "sampling_steps": 15,
-    "end_to_end_seconds": 6.140641013000277,
-    "inference_seconds": 4.915941797000414,
+    "end_to_end_seconds": 5.927883447000568,
+    "inference_seconds": 4.907951431001493,
     "peak_gpu_memory_bytes": 5053262848
   },
   {
@@ -14,9 +15,10 @@
     "run_index": 1,
     "device": "gpu",
     "batch_size": 1,
+    "prompt": "medium",
     "sampling_steps": 15,
-    "end_to_end_seconds": 6.014373627999703,
-    "inference_seconds": 4.925007283000014,
+    "end_to_end_seconds": 5.946631079001236,
+    "inference_seconds": 4.929469890999826,
     "peak_gpu_memory_bytes": 5057752064
   },
   {
@@ -24,9 +26,10 @@
     "run_index": 2,
     "device": "gpu",
     "batch_size": 1,
+    "prompt": "medium",
     "sampling_steps": 15,
-    "end_to_end_seconds": 6.054927543999838,
-    "inference_seconds": 4.970360921000065,
+    "end_to_end_seconds": 6.104031947999829,
+    "inference_seconds": 4.927691595001306,
     "peak_gpu_memory_bytes": 5057719296
   }
 ]

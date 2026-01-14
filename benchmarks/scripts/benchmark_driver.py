@@ -31,12 +31,14 @@ BATCH_SIZE = 2 #Change this for batch size diff
 NUM_RUNS = 3
 
 PROMPT_PATH = Path("benchmarks/prompts/simple.txt")
+PROMPT_NAME = PROMPT_PATH.stem
+
 RESULTS_DIR = Path("benchmarks/results/raw/")
 
 logger = get_logger(__name__ , log_file="benchmark_inf.log" )
 
 logger.info("Starting inference latency benchmark")
-logger.info(f"Config = {CONFIG_VARIANT}, Device = {DEVICE}, Batch Size = {BATCH_SIZE} , Runs = {NUM_RUNS}")
+logger.info(f"Config = {CONFIG_VARIANT}, Device = {DEVICE}, Batch Size = {BATCH_SIZE} , Runs = {NUM_RUNS}, Prompt Used: {PROMPT_NAME}")
 
 logger.info(
     f"Run configuration | Device={DEVICE} | FP16={USE_FP16}"
@@ -149,6 +151,7 @@ for run_index in range(NUM_RUNS):
         "run_index": run_index,
         "device": DEVICE,
         "batch_size": BATCH_SIZE,
+        "prompt": PROMPT_NAME,
         "sampling_steps": resolved_config["inference"]["sampling_steps"],
         "end_to_end_seconds": e2e,
         "inference_seconds": inf,
@@ -166,7 +169,7 @@ for run_index in range(NUM_RUNS):
 
 RESULTS_DIR.mkdir(parents=True, exist_ok=True)
 
-output_path = RESULTS_DIR / f"{BENCHMARK_NAME}_{DEVICE}.json"
+output_path = RESULTS_DIR / f"{BENCHMARK_NAME}_{DEVICE}_{CONFIG_VARIANT}_batch_size_{BATCH_SIZE}_{PROMPT_NAME}.json"
 
 write_raw_results(output_path=output_path, data=raw_results)
 logger.info(f"Benchmark completed successfully")

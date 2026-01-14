@@ -1,0 +1,35 @@
+[
+  {
+    "benchmark": "inference_latency",
+    "run_index": 0,
+    "device": "gpu",
+    "batch_size": 2,
+    "prompt": "simple",
+    "sampling_steps": 15,
+    "end_to_end_seconds": 12.12850963299934,
+    "inference_seconds": 10.01161907200003,
+    "peak_gpu_memory_bytes": 5488763904
+  },
+  {
+    "benchmark": "inference_latency",
+    "run_index": 1,
+    "device": "gpu",
+    "batch_size": 2,
+    "prompt": "simple",
+    "sampling_steps": 15,
+    "end_to_end_seconds": 12.416320620999613,
+    "inference_seconds": 10.095100533999357,
+    "peak_gpu_memory_bytes": 5497201664
+  },
+  {
+    "benchmark": "inference_latency",
+    "run_index": 2,
+    "device": "gpu",
+    "batch_size": 2,
+    "prompt": "simple",
+    "sampling_steps": 15,
+    "end_to_end_seconds": 12.489494347999425,
+    "inference_seconds": 10.282059630000731,
+    "peak_gpu_memory_bytes": 5497185280
+  }
+]

@@ -1,4 +1,3 @@
-#Hugh cost configurations
 runtime:
   device: ${DEVICE}     
 
@@ -7,6 +6,7 @@ inference:
   batch_size: ${BATCH}  
 
 output:
-  format: ply
+  formats: 
+     - ply
 
 precision: default 
