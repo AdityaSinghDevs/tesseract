@@ -27,7 +27,7 @@ BENCHMARK_NAME = "inference_latency"
 CONFIG_VARIANT = "baseline"
 
 DEVICE = "gpu" #CHANGE THIS FOR CPU RUN
-BATCH_SIZE = 2 #Change this for batch size diff
+BATCH_SIZE = 1 #Change this for batch size diff
 NUM_RUNS = 3
 
 PROMPT_PATH = Path("benchmarks/prompts/simple.txt")
