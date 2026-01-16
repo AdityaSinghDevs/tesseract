@@ -1,28 +1,42 @@
-# Tesseract - v1.0
+# Tesseract - v1.2
+
+_A reproducible, benchmarked text-to-3D inference system_
+
 
 Generate 3D meshes from text prompts through a REST API or CLI with asynchronous job management and flexible output formats.<br>
 A production-grade, modular ML pipeline that uses diffusion-driven neural nets to generate 3D mesh assets from text or image inputs, built with scalability, reliability, and deployment in mind.<br><br>
 _A Mini research-to-production pipeline_
 
+<p align="center">
+  <img src="docs/tesseract.gif" alt="Tesseract Logo" width="300" />
+</p>
+
+<p align="center">
+  <em>A sample generated mesh for the prompt <strong>"A shark"</strong> using Tesseract.</em>
+</p>
+
+---
 ## Table of Contents
 
-1. [Overview](#overview)  
-2. [Features](#features)  
-3. [Note on Output Quality](#note)  
-4. [Installation](#installation)  
+1. [Overview](#overview) 
+2. [What’s New in v1.2](#whats-new-in-v1.2)
+3. [Features](#features)  
+4. [Note on Output Quality](#note) 
+5. [Performance & Benchmarks](#performance--benchmarks) 
+6. [Installation](#installation)  
    - [Using Conda](#using-conda)  
    - [Using Python venv](#using-python-venv)  
    - [Deployment](#deployment)  
-5. [Project Structure](#project-structure)  
-6. [Usage](#usage)  
+7. [Project Structure](#project-structure)  
+8. [Usage](#usage)  
    - [Running the API](#running-the-api)  
      - [Local Development](#local-development)  
    - [Running via CLI](#running-via-cli)  
      - [Quick Examples](#quick-examples)  
      - [Key CLI Parameters](#key-cli-parameters)  
-7. [API Examples](#api-examples)  
+9. [API Examples](#api-examples)  
    - [API Documentation](#api-documentation)
-8. [Configuration](#configuration)  
+10. [Configuration](#configuration)  
    - [Configuration Parameters Explained](#configuration-parameters-explained)  
      - [General Settings](#general-settings)  
      - [Device Settings](#device-settings)  
@@ -30,13 +44,13 @@ _A Mini research-to-production pipeline_
      - [File Management](#file-management)  
      - [Rendering Options (Experimental)](#rendering-options-experimental)  
    - [Performance Tuning Tips](#performance-tuning-tips)  
-9. [License](#license)
+11. [License](#license)
 
-
+---
 
 ## Overview
 
-Tesseract V1 exists to make the process of generating 3D meshes from text prompts accessible and scriptable. It wraps around an underlying 3D generation pipeline, exposes it through a production-ready FastAPI backend, and also provides a command-line interface for batch and local workflows.
+Tesseract v1.2 exists to make the process of generating 3D meshes from text prompts accessible and scriptable. It wraps around an underlying 3D generation pipeline, exposes it through a production-ready FastAPI backend, and also provides a command-line interface for batch and local workflows.
 
 The motivation behind Tesseract is to speed up early-stage 3D asset creation. While the generated meshes are not final production assets, they serve as useful starting points or "canvases" that can be refined further in professional 3D tools. This removes the need to begin modeling completely from scratch and allows more focus on creative iteration.
 
@@ -49,11 +63,37 @@ The motivation behind Tesseract is to speed up early-stage 3D asset creation. Wh
 - **Multiple interface options**: REST API for integration, CLI for scripting/batch jobs.
 - **Stateless API** — scalable horizontally behind a load balancer  
 - Minimal external dependencies for easier deployment  
+---
+## What’s New in v1.2
 
+Tesseract v1.2 introduces **reproducible performance benchmarking and system-level characterization** of the inference pipeline.
 
+This release does not change model behavior or output quality. Instead, it formalizes:
+- End-to-end and inference-only latency measurement
+- GPU vs CPU execution characterization
+- Batch size and sampling-step scaling behavior
+- Deterministic GPU memory usage analysis
+- Prompt complexity impact analysis
+
+All benchmarks are executed under controlled conditions and documented in `benchmarks/` with raw results, aggregated tables, and detailed analysis in `PERFORMANCE.md`.
+
+This release establishes a **measured performance baseline** for future optimization and architectural evolution.
+
+---
+## System Architecture
+
+<p align="center">
+  <img src="docs/architecture.png" alt="Tesseract System Architecture" width="800" />
+</p>
+
+<p align="center">
+  <em>High-level architecture of the Tesseract inference pipeline, showing API/CLI entrypoints, configuration resolution, device-aware execution, and post-processing.</em>
+</p>
+
+---
 ## Features
 
-### Built for Production Tesseract V1 can:
+### Built for Production Tesseract v1.2 can:
 * Generate 3D meshes directly from natural language prompts
 - Export in multiple formats: **OBJ**, **PLY**, and **GLB**  
 - Provide both **REST API** and **CLI** workflows  
@@ -61,17 +101,16 @@ The motivation behind Tesseract is to speed up early-stage 3D asset creation. Wh
 * Offer API endpoints to check job status and download generated files
 * Support extensive CLI flags for controlling batch size, formats, and other parameters
 * Save all outputs in organized output directories with clear file naming
-- Logging for both API and pipeline processes for monitoring and debugging 
-
+- Logging for both API and pipeline processes for monitoring and debugging
 - Handles **parallel job execution** without blocking other requests.
 - Fully **stateless API design**—can be scaled horizontally behind a load balancer.
 - Output **directory isolation per job** to prevent conflicts.
 - Minimal external dependencies to reduce deployment friction.
+- Config-driven execution with reproducible performance characterization (see PERFORMANCE.md)
 
 
-
-## Note 
-Due to the limited and not very high quality of training data for the underlying Shape-E model, outputs from Tesseract are not of final production quality. Instead, these meshes are best used as starting canvases for further refinement in modeling tools. This is an advantage over starting from a blank scene, as you immediately get a base structure to work with.  <br>
+### Note 
+> Due to the limited and not very high quality of training data for the underlying Shape-E model, outputs from Tesseract are not of final production quality. Instead, these meshes are best used as starting canvases for further refinement in modeling tools. This is an advantage over starting from a blank scene, as you immediately get a base structure to work with.  <br>
 
 While Tesseract’s architecture is production-ready, final deployment performance depends on
 the underlying model hardware, tuning, and integration with your environment.
@@ -80,6 +119,37 @@ the underlying model hardware, tuning, and integration with your environment.
 You can check the training samples for shap-e [here](https://github.com/openai/shap-e/tree/main/samples)
 
 It is also recommended to increase the batch size to produce more outputs in a single run, increasing the chances of finding a desirable starting point. Further tweaking of configuration parameters can also improve the usefulness of outputs and will be explained in later sections.
+
+---
+
+## Performance & Benchmarks
+
+Tesseract includes a comprehensive benchmarking suite to characterize inference performance across devices and configurations.
+
+These benchmarks are directly informed by the architectural decisions described in `DESIGN.md`, and serve to empirically validate the system-level trade-offs made in Tesseract v1.0.
+
+These benchmarks characterize behavior under controlled, single-GPU conditions and are not intended to represent production throughput limits.
+
+
+### Benchmark Coverage
+- **Inference vs end-to-end latency decomposition**
+- **GPU vs CPU performance comparison**
+- **Batch size scaling (1, 2, 4)**
+- **Sampling step scaling (15 vs 64)**
+- **Prompt complexity impact (simple, medium, complex)**
+- **Peak GPU memory usage**
+
+### Benchmark Artifacts
+- **Raw results:** `benchmarks/results/raw/`
+- **Aggregated tables:** `benchmarks/results/tables/`
+- **Benchmark scripts:** `benchmarks/`
+- **Methodology and discussion:** `PERFORMANCE.md`
+
+All results are reported as **mean ± sample standard deviation over three runs**.
+
+> CPU execution is supported for correctness and portability but is orders of magnitude slower than GPU execution and not intended for production usage.
+
+---
 
 ## Installation
 
@@ -112,6 +182,7 @@ Tesseract is designed for easy deployment in both development and production env
 - Compatible with **Kubernetes scaling patterns** for serving multiple generation jobs in parallel.
 
 
+---
 ## Project Structure
 
 ```
@@ -142,7 +213,7 @@ tesseract/
 ├── shape_e_structure.svg          # Shape-E core diagram
 └── LICENCE                   # Project license
 ```
-
+---
 # Usage
 
 ## Running the API
@@ -209,6 +280,7 @@ python cli.py -p "A simple chair" --dry-run
 
 #### Example 
 `python cli.py --help`
+---
 
 ## API Examples
 
@@ -237,6 +309,7 @@ curl -O -J "http://127.0.0.1:8000/api/v1/download/<job_id>"
 - **Interactive Docs**: [Swagger UI](http://127.0.0.1:8000/docs)
 - **Static Docs**: [ReDoc](http://127.0.0.1:8000/redoc)
 
+---
 ## Configuration
 
 Tesseract uses `defaults.yaml` for runtime configuration. Modify these settings to tune generation behavior and resource usage.
@@ -287,6 +360,9 @@ You can refer to `defaults.yaml` file for understanding detailed effects of each
 - **More Creative**: Lower `guidance_scale` (5-10)
 - **More Faithful**: Higher `guidance_scale` (15-25)
 
+> See `PERFORMANCE.md` for empirically measured latency, scaling behavior, and memory usage across configurations.
+
+---
 ## License
 
 This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).

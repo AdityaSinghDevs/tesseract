@@ -1,0 +1,12 @@
+inference:
+  batch_size: ${BATCH}
+  sampling_steps: 15
+
+runtime:
+  device: ${DEVICE}
+
+output:
+  formats: 
+    - ply
+
+precision: default
