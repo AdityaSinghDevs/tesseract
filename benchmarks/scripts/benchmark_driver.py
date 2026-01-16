@@ -14,7 +14,7 @@ from tesseract.core.model_loader import get_device, load_all_models
 from tesseract.core.generator import get_or_generate_latents
 from tesseract.core.mesh_util import decode_latents, save_mesh
 
-from tesseract.config.config import ( USE_CUDA,FALLBACK_TO_CPU,BASE_MODEL,
+from tesseract.config.config import ( BASE_MODEL,
                                     TRANSMITTER,DIFFUSION_CONFIG, OUTPUT_DIR,
                                     BASE_FILE,
                                     GUIDANCE_SCALE, USE_FP16, USE_KARRAS, CLIP_DENOISED,PROGRESS,
