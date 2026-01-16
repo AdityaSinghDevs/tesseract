@@ -52,8 +52,6 @@ Benchmarks are executed across a controlled set of configurations to ensure fair
 | High-concurrency load testing | The system prioritizes correctness and predictability of heavy inference workloads rather than high-QPS request handling. |
 
 
-
-
 ## Benchmark Environment
 
 Benchmarks were executed on **Google Colab** with a single GPU assigned per session.  
@@ -219,6 +217,14 @@ These results indicate that prompt complexity has negligible impact on the core
 diffusion inference workload, and minor variations in end-to-end latency are
 likely attributable to preprocessing or system-level overhead rather than model
 execution.
+
+---
+
+### Failure Modes
+- GPU OOM for large batch sizes
+- CPU execution exceeding practical time limits
+- Cold-start latency due to model loading
+- Limited output quality due to upstream model
 
 ---
 
