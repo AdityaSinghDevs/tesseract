@@ -1,15 +1,3 @@
-### Note on Result File Naming
-
-Early benchmark runs used a simpler file naming scheme.
-After benchmarking logic stabilized, result filenames were standardized to:
-
-{benchmark}_{device}_{config}_batch_size_{N}_{prompt}.json
-
-Along with better logging of parameters.
-For consistency, earlier result files were renamed without modifying their contents.
-All metrics inside JSON files are produced directly by the benchmark scripts.
-
-
 # Benchmarks
 
 This directory contains the benchmarking infrastructure and experimental results for **Tesseract**, focusing on inference-time performance, scalability, and resource utilization. The goal of these benchmarks is to provide **transparent, reproducible, and configuration-controlled** measurements of model inference under different runtime settings.
@@ -35,13 +23,14 @@ All benchmarks are executed using a fixed pipeline and configuration system to e
 
 All measurements are performed using a single unified script:
 ```
-benchmarks/scripts/benchmark_inference.py
+benchmarks/scripts/benchmark_driver.py
 ```
 
 This script is intentionally designed to be **parameter-driven**, with runtime behavior controlled via:
 
 - device selection (`cpu` / `gpu`)
 - batch size
+- runs
 - sampling configuration (`baseline`, `high_cost`)
 - prompt selection (`simple`, `medium`, `complex`)
 
@@ -160,7 +149,7 @@ To reproduce any benchmark:
 
 2. Run:
 ```bash
-python -m benchmarks.scripts.benchmark_inference 
+python -m benchmarks.scripts.driver 
 
 ```
 
@@ -168,7 +157,7 @@ Ensure the environment details (Python, PyTorch, CUDA, hardware) are recorded.
 
 A sample Colab notebook demonstrating this is provided in:
 ```
-benchmarks/notebooks/
+benchmarks/notebooks/sample_benchmarking
 ```
 
 ---

@@ -79,6 +79,27 @@ All benchmarks are executed under controlled conditions and documented in `bench
 
 This release establishes a **measured performance baseline** for future optimization and architectural evolution.
 
+In addition, v1.2 formalizes system design documentation, explicitly describing architecture, request lifecycle, and design trade-offs such as stateless execution, async request handling, and GPU/CPU fallback behavior (see `DESIGN.md`).
+
+
+---
+## System Design Overview
+
+Tesseract is designed as a **stateless, asynchronous inference system** rather than a tightly coupled research script.
+
+At a high level, the system exposes both a REST API and a CLI, which converge into a shared inference pipeline responsible for configuration resolution, device-aware execution (GPU/CPU), diffusion-based inference, and post-processing into mesh assets.
+
+Key design principles include:
+- Asynchronous request handling to avoid blocking during long-running inference
+- Stateless execution for portability and horizontal scalability
+- Explicit, config-driven control over performance-critical parameters
+- Graceful GPU/CPU fallback to support heterogeneous environments
+
+A detailed discussion of the system architecture, request lifecycle, and design trade-offs is provided in **[DESIGN.md](DESIGN.md)**.
+
+The Shape-E model is vendored under `tesseract/core/shap_e/` and used as an unmodified third-party dependency.
+
+
 ---
 ## System Architecture
 
@@ -91,6 +112,7 @@ This release establishes a **measured performance baseline** for future optimiza
 </p>
 
 ---
+
 ## Features
 
 ### Built for Production Tesseract v1.2 can:
@@ -142,7 +164,7 @@ These benchmarks characterize behavior under controlled, single-GPU conditions a
 ### Benchmark Artifacts
 - **Raw results:** `benchmarks/results/raw/`
 - **Aggregated tables:** `benchmarks/results/tables/`
-- **Benchmark scripts:** `benchmarks/`
+- **Benchmark scripts:** `benchmarks/benchmark_driver`
 - **Methodology and discussion:** `PERFORMANCE.md`
 
 All results are reported as **mean ± sample standard deviation over three runs**.
@@ -186,32 +208,77 @@ Tesseract is designed for easy deployment in both development and production env
 ## Project Structure
 
 ```
+## Project Structure
+
 tesseract/
 ├── api/
-│   ├── __init__.py
-│   ├── api.py                # API implementation
-│   └── schemas.py            # Pydantic API request/response schemas
+│   ├── api.py                     # FastAPI implementation
+│   └── schemas.py                 # Pydantic request/response schemas
+│
 ├── tesseract/
-│   ├── config/               # Configuration files and settings
+│   ├── config/                    # Runtime configuration files
+│   │
 │   ├── core/
-│   │   ├── __init__.py
-│   │   ├── generator.py      # Core generation logic
-│   │   ├── mesh_util.py      # Mesh processing utilities
-│   │   ├── model_loader.py   # Model loading and management
-│   │   └── render_core.py    # Core rendering functionality
-│   ├── loggers/              # Logging configuration and utilities
-│   ├── api_outputs/          # API-generated output files
-│   └── outputs/              # CLI generated output files
-├── logs/                     # Application logs (gitignored)
-├── notebooks/                # Jupyter Notebook samples for using project in Colab or similar
-├── app.py                    # API entry point (FastAPI)
-├── cli.py                    # CLI entry point
-├── main.py                   # Main application logic
-├── render.py                 # Rendering script (under development)
-├── requirements.txt          # Python dependencies
-├── README.md                 # Project documentation
-├── shape_e_structure.svg          # Shape-E core diagram
-└── LICENCE                   # Project license
+│   │   ├── generator.py           # Core diffusion inference pipeline
+│   │   ├── mesh_util.py           # Latent decoding and mesh utilities
+│   │   ├── model_loader.py        # Model loading and device management
+│   │   ├── render_core.py         # Rendering utilities (experimental)
+│   │   │
+│   │   └── shap_e/                # Vendored Shape-E source (third-party)
+│   │       └── ...                # Unmodified Shape-E project files
+│   │
+│   ├── loggers/                   # Logging configuration and helpers
+│   ├── api_outputs/               # API-generated outputs (per job)
+│   └── outputs/                   # CLI-generated outputs
+│
+├── benchmarks/
+│   ├── configs/
+│   │   ├── baseline.yaml          # Baseline benchmarking configuration
+│   │   ├── high_cost.yaml         # High-cost / high-quality configuration
+│   │   └── config_loader.py
+│   │
+│   ├── scripts/
+│   │   └── benchmark_driver.py    # Unified benchmarking entrypoint
+│   │
+│   ├── prompts/
+│   │   ├── simple.txt
+│   │   ├── medium.txt
+│   │   └── complex.txt
+│   │
+│   ├── results/
+│   │   ├── raw/                   # Raw per-run JSON benchmark outputs
+│   │   └── tables/                # Aggregated markdown result tables
+│   │
+│   ├── notebooks/
+│   │   └── sample_benchmarking.ipynb  # Reproducible benchmark walkthrough
+│   │
+│   ├── utils/
+│   │   ├── timing.py              # Latency measurement utilities
+│   │   └── io.py                  # Result serialization helpers
+│   │
+│   └── README.md                  # Benchmark methodology overview
+│
+├── docs/
+│   ├── architecture.png           # System architecture diagram
+│   ├── shape_e_structure.svg      # Shape-E internal structure diagram
+│   ├── benchmarknotes.txt         # Benchmark design notes
+│   └── env.txt                    # Benchmark environment snapshot
+│
+├── DESIGN.md                      # System design rationale and trade-offs
+├── PERFORMANCE.md                 # Benchmark results and analysis
+│
+├── notebooks/                     # Usage and demo notebooks
+├── logs/                          # Application logs (gitignored)
+│
+├── app.py                         # API entry point
+├── cli.py                         # CLI entry point
+├── main.py                        # Shared application bootstrap
+├── render.py                      # Rendering script (under development)
+├── requirements.txt               # Python dependencies
+├── README.md                      # Main project documentation
+├── LICENSE                        # Project license (AGPL-3.0)
+└── THIRD_PARTY_LICENSES.md        # Licenses for vendored dependencies
+
 ```
 ---
 # Usage

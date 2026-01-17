@@ -134,10 +134,10 @@ substantial under identical baseline configurations (batch size = 1, sampling
 steps = 15, simple prompt). Table `gpu_vs_cpu_latency.md` summarizes these results.
 
 GPU inference completes in **4.936 ± 0.029 s**, whereas CPU inference requires
-**1635.15 ± 17.73 s**, resulting in an approximate **330× slowdown** when falling
+**1635.15 ± 17.73 s** _(~27 mins)_, resulting in an approximate **330× slowdown** when falling
 back to CPU execution. A similar disparity is observed for end-to-end latency,
 with GPU execution completing in **6.069 ± 0.064 s** compared to
-**1662.15 ± 16.50 s** on CPU.
+**1662.15 ± 16.50 s** _(~28 mins)_ on CPU.
 
 These results demonstrate that CPU execution is functionally correct but
 computationally impractical for diffusion-based 3D generation workloads. The
@@ -161,7 +161,7 @@ the inference pipeline rather than auxiliary system components.
 
 ### Batch Size Scaling on GPU
 
-Batch size scaling behavior is summarized in `batch_size_scaling.md`. Increasing
+Batch size scaling behavior is summarized in `batch_size_scaling_gpu.md`. Increasing
 batch size from 1 to 4 results in near-linear growth in both inference and
 end-to-end latency.
 
@@ -170,12 +170,7 @@ end-to-end latency.
 - Batch size 4: **20.628 ± 0.823 s**
 
 While absolute latency increases with batch size, this behavior enables higher
-aggregate throughput at the cost of increased per-request latency. Peak GPU
-memory usage scales monotonically with batch size, increasing from
-**5.055 ± 0.002 GiB** at batch size 1 to **6.364 ± 0.009 GiB** at batch size 4.
-
-Notably, GPU memory variance remains extremely low across runs, indicating
-stable and deterministic memory allocation once the system has warmed up.
+aggregate throughput at the cost of increased per-request latency.
 
 ---
 
@@ -219,6 +214,26 @@ likely attributable to preprocessing or system-level overhead rather than model
 execution.
 
 ---
+### GPU Memory Utilization
+
+Peak GPU memory usage was measured for all GPU runs and reported as
+**mean ± sample standard deviation**. Memory usage scales monotonically with batch
+size, increasing from **5.055 ± 0.002 GiB** at batch size 1 to
+**6.364 ± 0.009 GiB** at batch size 4.
+
+Increasing sampling steps from 15 to 64 does not affect peak GPU memory usage,
+which remains constant at approximately **5.055 ± 0.002 GiB**. Similarly, prompt
+complexity has no measurable impact on GPU memory consumption.
+
+Under the evaluated configurations, successful GPU execution requires **approximately
+5.1 GiB of available GPU memory** at minimum. This value reflects the steady-state
+memory footprint after model loading and warm-up, and does not include additional
+headroom required by concurrent workloads or system overhead.
+
+Across all configurations, peak GPU memory exhibits extremely low variance after
+warm-up, indicating stable and deterministic memory allocation behavior during
+inference.
+---
 
 ### Failure Modes
 - GPU OOM for large batch sizes
@@ -244,6 +259,9 @@ The benchmark results support the following conclusions:
    that the diffusion process, rather than text processing, dominates runtime.
 6. **GPU memory usage stabilizes after warm-up**, exhibiting low variance and
    deterministic behavior across runs.
+7. **GPU memory footprint:** Tesseract requires ~**5.1 GiB** of GPU memory for  batch size 1 after warm-up. Memory usage scales with batch size and is invariant to sampling steps and prompt complexity.
+
+
 
 Overall, these results provide a clear performance characterization of
 Tesseract’s inference pipeline and establish a reliable baseline for future
